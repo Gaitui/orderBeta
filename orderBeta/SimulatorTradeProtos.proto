@@ -1,0 +1,118 @@
+// See README.txt for information and build instructions.
+//
+// Note: START and END tags are used in comments to define sections used in
+// tutorials.  They are not part of the syntax for Protocol Buffers.
+//
+// To get an in-depth walkthrough of this file and the related examples, see:
+// https://developers.google.com/protocol-buffers/docs/tutorials
+
+// [START declaration]
+syntax = "proto3";
+package tutorial;
+
+// [END declaration]
+
+// [START csharp_declaration]
+option csharp_namespace = "SimulatorTrade";
+// [END csharp_declaration]
+
+// [START messages]
+message SimulatorTradeReply {
+  string TransactTime = 1;
+  SideEnum Side = 2;
+  string Symbol = 3;
+  int32 OrderQty = 4;
+  double Price = 5;
+  OrderTypeEnum OrderType = 6;
+  string TSEOrderType = 7;
+  TimeInForceEnum TimeInForce = 8;
+  string OrderID = 9;
+  int64 NID = 10;
+  int32 LeavesQty = 11;
+  OrderStatusEnum OrderStatus = 12;
+  string StatusCode = 13;
+  string Text = 14;
+  int32 ReportSeq = 15;
+  MarketEnum Market = 16;  
+}
+
+message SimulatorTradeOrder {
+  string TransactTime = 1;
+  SideEnum Side = 2;
+  string Symbol = 3;
+  int32 OrderQty = 4;
+  double Price = 5;
+  OrderTypeEnum OrderType = 6;
+  string TSEOrderType = 7;
+  TimeInForceEnum TimeInForce = 8;
+  int64 NID = 9;
+  MarketEnum Market = 10;  
+  string OrderID=11;
+  KindEnum Kind= 12;
+}
+enum KindEnum
+{
+    kNew=0;
+    kCancel = 1;
+    kReplace = 2;
+}
+enum SideEnum 
+{
+    sNone=0;
+    sBuy = 1;
+    sSell = 2;
+}
+
+enum OrderTypeEnum 
+{
+    otNone = 0;
+    otMarket = 1;
+    otLimit = 2;
+    otMarketWithProtection = 3;
+    otStop = 4;
+    otStopLimit = 5;
+}
+
+enum OrderStatusEnum
+{
+    osNone = 0;
+    osPendingNew = 1;
+    osNew = 2;
+    osPendingReplace = 3;
+    osReplaced = 4;
+    osPendingCancel = 5;
+    osCanceled = 6;
+    osPartiallyFilled = 7;
+    osFilled = 8;
+    osQuoteAccept = 9;
+    osExpired = 10;
+    osRejected = 11;
+    osQuoteRequestAccept = 12;
+}
+
+enum TimeInForceEnum 
+{
+    tifNone = 0;
+    tifROD = 1;
+    tifIOC = 2;
+    tifFOK = 3;
+    tifTFXQ = 8;
+}
+
+ enum MarketEnum
+ {
+     mFutures = 0;
+     mOptions = 1;
+     mTSE = 2;
+     mOTC = 3;
+     mForeignFutures = 4;
+     mForeignOptions = 5;
+     mForeignStock = 6;
+     mCNFutures = 7;
+     mCNOptions = 8;
+     mES = 9;
+     mTSE_ODD = 10;
+     mOTC_ODD = 11;
+ }
+
+// [END messages]
