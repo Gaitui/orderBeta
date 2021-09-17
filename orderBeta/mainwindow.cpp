@@ -25,25 +25,37 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     rmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("賣出張數")));
     ui->realtime->setModel(rmodel);
 
-    QStandardItemModel *enmodel = new QStandardItemModel(0,7,this);
+    QStandardItemModel *enmodel = new QStandardItemModel(0,9,this);
     enmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("單號")));
     enmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("商品代號")));
     enmodel->setHorizontalHeaderItem(2,new QStandardItem(QString("買賣")));
     enmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("委託價")));
     enmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("委託數")));
-    enmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("剩餘數")));
-    enmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("成交數")));
+    enmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("成交數")));
+    enmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("剩餘數")));
+    enmodel->setHorizontalHeaderItem(7,new QStandardItem(QString("修改數")));
+    enmodel->setHorizontalHeaderItem(8,new QStandardItem(QString("送出")));
     ui->nowentrust->setModel(enmodel);
 
-    QStandardItemModel *dmodel = new QStandardItemModel(0,7,this);
+    QStandardItemModel *dmodel = new QStandardItemModel(0,6,this);
     dmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("單號")));
     dmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("商品代號")));
     dmodel->setHorizontalHeaderItem(2,new QStandardItem(QString("買賣")));
     dmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("委託價")));
     dmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("委託數")));
-    dmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("剩餘數")));
-    dmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("成交數")));
+    dmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("成交數")));
+
     ui->deal->setModel(dmodel);
+
+    QStandardItemModel *hmodel = new QStandardItemModel(0,7,this);
+    hmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("單號")));
+    hmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("商品代號")));
+    hmodel->setHorizontalHeaderItem(2,new QStandardItem(QString("買賣")));
+    hmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("委託價")));
+    hmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("數量")));
+    hmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("狀態")));
+    hmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("原因")));
+    ui->passentrust->setModel(hmodel);
 
     if(login)
     {
@@ -90,4 +102,10 @@ void MainWindow::getshow(int k)
     rmodel->QStandardItemModel::setItem(rownum,5,i5);
 
     return;
+}
+
+void MainWindow::on_login_clicked()
+{
+    QString str = "Test129";
+    emit sendlink(str);
 }

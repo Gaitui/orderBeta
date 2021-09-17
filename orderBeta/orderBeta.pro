@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,12 +28,22 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     showui.cpp \
-    showthread.cpp
+    showthread.cpp \
+    link.cpp \
+    linkthread.cpp
 
 HEADERS += \
         mainwindow.h \
     showui.h \
-    showthread.h
+    showthread.h \
+    link.h \
+    linkthread.h
 
 FORMS += \
         mainwindow.ui
+
+INCLUDEPATH += "tmp/lib/include" \
+               "/root/lib/protobuf-3.11.4/include"
+
+LIBS += -L "/tmp/libpcap/lib" -lpcap
+

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1144</width>
-    <height>684</height>
+    <height>873</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout_6">
+     <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
@@ -306,6 +306,33 @@
        </layout>
       </item>
       <item>
+       <spacer name="verticalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>13</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>目前委託</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableView" name="nowentrust"/>
+        </item>
+       </layout>
+      </item>
+      <item>
        <spacer name="verticalSpacer_6">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -319,7 +346,7 @@
        </spacer>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="30,1,100">
+       <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="50,1,100">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
@@ -348,92 +375,40 @@
          </spacer>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QTabWidget" name="tabWidget">
-            <property name="currentIndex">
-             <number>1</number>
-            </property>
-            <widget class="QWidget" name="Tab_1">
-             <attribute name="title">
-              <string>目前委託</string>
-             </attribute>
-             <layout class="QGridLayout" name="gridLayout_2">
-              <item row="0" column="0">
-               <widget class="QTableView" name="nowentrust"/>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="tab_2">
-             <attribute name="title">
-              <string>歷史委託</string>
-             </attribute>
-             <layout class="QGridLayout" name="gridLayout">
-              <item row="0" column="0">
-               <widget class="QTableView" name="tableView"/>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <item>
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>成交</string>
-              </property>
-             </widget>
-            </item>
-            <item>
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="QWidget" name="Tab_1">
+           <attribute name="title">
+            <string>成交</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="1" column="0">
              <widget class="QTableView" name="deal"/>
             </item>
            </layout>
-          </item>
-         </layout>
+          </widget>
+          <widget class="QWidget" name="tab_2">
+           <attribute name="title">
+            <string>歷史委託</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+             <widget class="QTableView" name="passentrust"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
         </item>
        </layout>
       </item>
      </layout>
     </item>
    </layout>
-   <zorder>login</zorder>
-   <zorder>exit</zorder>
-   <zorder>horizontalSpacer</zorder>
-   <zorder>realtime</zorder>
-   <zorder>tabWidget</zorder>
-   <zorder>pushButton_3</zorder>
-   <zorder>spinBox</zorder>
-   <zorder>comboBox</zorder>
-   <zorder>label</zorder>
-   <zorder>label_2</zorder>
-   <zorder>label_3</zorder>
-   <zorder>label_4</zorder>
-   <zorder>verticalSpacer</zorder>
-   <zorder>verticalSpacer_2</zorder>
-   <zorder>horizontalSpacer_2</zorder>
-   <zorder>horizontalSpacer_3</zorder>
-   <zorder>label_5</zorder>
-   <zorder>deal</zorder>
-   <zorder>label_6</zorder>
-   <zorder>label_7</zorder>
-   <zorder>tableView_3</zorder>
-   <zorder>horizontalSpacer_4</zorder>
-   <zorder>horizontalSpacer_5</zorder>
-   <zorder>verticalSpacer_4</zorder>
-   <zorder>pushButton_3</zorder>
-   <zorder>label_6</zorder>
-   <zorder>realtime</zorder>
    <zorder></zorder>
-   <zorder>lineEdit_2</zorder>
-   <zorder>label_4</zorder>
-   <zorder>label_9</zorder>
-   <zorder>comboBox_2</zorder>
-   <zorder>comboBox_3</zorder>
-   <zorder>label_10</zorder>
-   <zorder>label_11</zorder>
-   <zorder>comboBox_4</zorder>
-   <zorder>verticalSpacer_6</zorder>
+   <zorder>nowentrust</zorder>
+   <zorder>verticalSpacer_3</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

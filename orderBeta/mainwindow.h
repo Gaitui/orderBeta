@@ -19,8 +19,10 @@ public:
 private slots:
     void on_exit_clicked();
     void getshow(int num);
-signals:
+    void on_login_clicked();
 
+signals:
+    void sendlink(QString);
 private:
     Ui::MainWindow *ui;
 };
