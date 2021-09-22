@@ -3,7 +3,7 @@
 
 showthread::showthread(MainWindow *w, QObject *parent) : QThread(parent)
 {
-    s.moveToThread(this);
+    //s.moveToThread(this);
     connect(&s,SIGNAL(sendshow(int)),w,SLOT(getshow(int)));
 }
 
@@ -15,7 +15,7 @@ showthread::~showthread()
 
 void showthread::run()
 {
-
+    //qDebug()<<"ShowUi ThreadId"<<QThread::currentThreadId();
     for(int i=0;i<5;i++)
     {
         sleep(1);

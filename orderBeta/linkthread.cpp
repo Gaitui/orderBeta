@@ -3,8 +3,11 @@
 
 linkthread::linkthread(MainWindow *w,QObject *parent) : QThread(parent)
 {
-    l.moveToThread(this);
+    //l.moveToThread(this);
     connect(w,SIGNAL(sendlink(QString)),&l,SLOT(writetohost(QString)));
+    connect(w,SIGNAL(sendlogin()),&l,SLOT(login()));
+    connect(w,SIGNAL(senddata()),&l,SLOT(datatohost()));
+    connect(&l,SIGNAL(sendError(QString)),w,SLOT(showError(QString)));
 }
 linkthread::~linkthread()
 {
@@ -13,8 +16,6 @@ linkthread::~linkthread()
 }
 void linkthread::run()
 {
-    l.waitForBytesWritten();
-
-    //delete l;
+    //qDebug()<<"link ThreadId"<<QThread::currentThreadId();
     exec();
 }

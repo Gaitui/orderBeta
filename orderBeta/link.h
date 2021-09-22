@@ -3,6 +3,9 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QAbstractSocket>
+#include <QHostAddress>
+#include <QByteArray>
+#include <fstream>
 
 class link : public QTcpSocket
 {
@@ -14,9 +17,12 @@ public:
 private:
     QTcpSocket socket;
 private slots:
+    void login();
     void writetohost(QString str);
+    void datatohost();
+    void readyRead();
 signals:
-    void fromhost();
+    void sendError(QString str);
 };
 
 #endif // LINK_H

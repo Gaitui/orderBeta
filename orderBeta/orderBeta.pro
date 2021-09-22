@@ -30,20 +30,24 @@ SOURCES += \
     showui.cpp \
     showthread.cpp \
     link.cpp \
-    linkthread.cpp
+    linkthread.cpp \
+    SimulatorTradeProtos.pb.cc
 
 HEADERS += \
         mainwindow.h \
     showui.h \
     showthread.h \
     link.h \
-    linkthread.h
+    linkthread.h \
+    SimulatorTradeProtos.pb.h
 
 FORMS += \
         mainwindow.ui
 
-INCLUDEPATH += "tmp/lib/include" \
-               "/root/lib/protobuf-3.11.4/include"
+INCLUDEPATH += "tmp/lib/include"
+INCLUDEPATH += "root/lib/protobuf-3.11.4/include"
 
 LIBS += -L "/tmp/libpcap/lib" -lpcap
-
+LIBS += /root/lib/protobuf-3.11.4/lib/libprotobuf.a
+LIBS += /root/lib/protobuf-3.11.4/lib/libprotobuf-lite.a
+LIBS += /root/lib/protobuf-3.11.4/lib/libprotoc.a

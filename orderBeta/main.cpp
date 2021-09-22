@@ -5,10 +5,12 @@
 #include <QApplication>
 #include <QThread>
 #include <queue>
+#include "SimulatorTradeProtos.pb.h"
 
 bool login = false;
 std::queue<int> q;
-
+tutorial::SimulatorTradeReply reply;
+tutorial::SimulatorTradeOrder order;
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +18,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     showthread rr(&w);
     linkthread ll(&w);
+    //qDebug()<<"Main ThreadId"<<QThread::currentThreadId();
     //QThread* thread = new QThread;
 
     //QObject::connect(s,SIGNAL(sendshow()),&w,SLOT(getshow(int &)));

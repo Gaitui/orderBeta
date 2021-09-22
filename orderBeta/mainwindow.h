@@ -2,7 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "showui.h"
+#include <QStandardItemModel>
+#include <QTableView>
+#include <QDebug>
+#include <QThread>
+#include <queue>
+#include <QMessageBox>
+#include <QLineEdit>
+#include <sys/time.h>
 
 namespace Ui {
 class MainWindow;
@@ -20,9 +27,14 @@ private slots:
     void on_exit_clicked();
     void getshow(int num);
     void on_login_clicked();
+    void showError(QString);
+
+    void on_sendNew_clicked();
 
 signals:
     void sendlink(QString);
+    void sendlogin();
+    void senddata();
 private:
     Ui::MainWindow *ui;
 };
