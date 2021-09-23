@@ -25,6 +25,7 @@ signals:
     void sendError(QString str);
     void relogin();
     void fromtcp();
+    void serverfail(QString);
 };
 
 #endif // LINK_H

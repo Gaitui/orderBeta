@@ -9,6 +9,7 @@ linkthread::linkthread(MainWindow *w,QObject *parent) : QThread(parent)
     connect(&l,SIGNAL(sendError(QString)),w,SLOT(showError(QString)));
     connect(&l,SIGNAL(relogin()),w,SLOT(relogin()));
     connect(&l,SIGNAL(fromtcp()),w,SLOT(fromtcp()));
+    connect(&l,SIGNAL(serverfail(QString)),w,SLOT(serverfail(QString)));
 }
 linkthread::~linkthread()
 {

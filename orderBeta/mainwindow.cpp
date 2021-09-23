@@ -297,7 +297,7 @@ void MainWindow::fromtcp()
         bm->setProperty("action","modify");
         ui->nowentrust->setIndexWidget(model->index(rownum,10),bm);
 
-        QPushButton *bd = new QPushButton("delete");
+        QPushButton *bd = new QPushButton("Delete");
         bd->setProperty("id",model->rowCount());
         bd->setProperty("action","Delete");
         ui->nowentrust->setIndexWidget(model->index(rownum,11),bd);
@@ -508,4 +508,20 @@ void MainWindow::delbuttonclick()
     order.set_kind(tutorial::KindEnum::kNew);
 
     emit senddata();*/
+}
+
+void MainWindow::serverfail(QString str)
+{
+
+    FILE *fout = fopen("/root/program/orderBetalog.txt","a");
+    QMessageBox::warning(NULL,"ERROR",str);
+    timeval curtime;
+    gettimeofday(&curtime,NULL);
+    int milisec = curtime.tv_usec/1000;
+    tm *local = localtime(&curtime.tv_sec);
+    QString tempstr;
+    tempstr.sprintf("%02d:%02d:%02d.%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec);
+    ui->record->append(tempstr +" "+ str);
+    fprintf(fout,"%s login success\n",logindata.c_str());
+    fclose(fout);
 }

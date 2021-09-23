@@ -32,6 +32,7 @@ private slots:
     void relogin();
     void fromtcp();
     void delbuttonclick();
+    void serverfail(QString);
 
 signals:
     void sendlink(QString);

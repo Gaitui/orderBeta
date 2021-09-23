@@ -15,7 +15,7 @@ link::link()
     socket.connectToHost(QHostAddress("192.168.1.124"),8004);
     if(!socket.waitForConnected(timeout))
     {
-        emit sendError("Server not ready!");
+        emit serverfail(socket.errorString());
         return;
     }
     f=false;
@@ -46,7 +46,20 @@ void link::login(void)
 }
 void link::writetohost(QString str)
 {
-    while(f);
+    if(f)
+    {
+        int timeout = 5000;
+        socket.connectToHost(QHostAddress("192.168.1.124"),8004);
+        if(!socket.waitForConnected(timeout))
+        {
+            emit serverfail(socket.errorString());
+            return;
+        }
+        f=false;
+        connect(&socket,SIGNAL(readyRead()),this,SLOT(readyRead()));
+        emit sendError("Server not ready!");
+        return;
+    }
     QByteArray w;
     int ssize = str.size();
     w.append(0x7e);
