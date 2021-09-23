@@ -28,8 +28,10 @@ private slots:
     void getshow(int num);
     void on_login_clicked();
     void showError(QString);
-
     void on_sendNew_clicked();
+    void relogin();
+    void fromtcp();
+    void delbuttonclick();
 
 signals:
     void sendlink(QString);

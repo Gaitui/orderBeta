@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1211</width>
+    <width>1270</width>
     <height>886</height>
    </rect>
   </property>
@@ -357,7 +357,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTableView" name="tableView_3"/>
+           <widget class="QTextBrowser" name="record"/>
           </item>
          </layout>
         </item>

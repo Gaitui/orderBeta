@@ -3,17 +3,19 @@
 #include "SimulatorTradeProtos.pb.h"
 #include "google/protobuf/text_format.h"
 #include <sstream>
+#include <QPushButton>
+#include <QAbstractItemView>
 
-
-extern bool login;
+extern bool havelogin;
+extern std::string logindata;
 extern std::queue<int> q;
 extern tutorial::SimulatorTradeOrder order;
+extern tutorial::SimulatorTradeReply reply;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     //showui *s = new showui(this);
-
 
     QStandardItemModel *rmodel = new QStandardItemModel(0,9,this);
     rmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
@@ -27,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     rmodel->setHorizontalHeaderItem(8,new QStandardItem(QString("賣出價格")));
     ui->realtime->setModel(rmodel);
 
-    QStandardItemModel *enmodel = new QStandardItemModel(0,11,this);
+    QStandardItemModel *enmodel = new QStandardItemModel(0,12,this);
     enmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
     enmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("單號")));
     enmodel->setHorizontalHeaderItem(2,new QStandardItem(QString("商品代號")));
@@ -39,16 +41,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     enmodel->setHorizontalHeaderItem(8,new QStandardItem(QString("剩餘數")));
     enmodel->setHorizontalHeaderItem(9,new QStandardItem(QString("修改數")));
     enmodel->setHorizontalHeaderItem(10,new QStandardItem(QString("送出")));
+    enmodel->setHorizontalHeaderItem(11,new QStandardItem(QString("刪除")));
     ui->nowentrust->setModel(enmodel);
 
-    QStandardItemModel *dmodel = new QStandardItemModel(0,7,this);
+    QStandardItemModel *dmodel = new QStandardItemModel(0,6,this);
     dmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
     dmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("單號")));
     dmodel->setHorizontalHeaderItem(2,new QStandardItem(QString("商品代號")));
     dmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("買賣")));
-    dmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("委託價")));
-    dmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("委託數")));
-    dmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("成交數")));
+    dmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("成交價")));
+    dmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("成交數")));
 
     ui->deal->setModel(dmodel);
 
@@ -84,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->newennum->setValidator(new QIntValidator(1,1e9,this));
 
-    if(login)
+    if(havelogin)
     {
         ui->login->setEnabled(false);
     }
@@ -143,13 +145,29 @@ void MainWindow::showError(QString str)
     QMessageBox::warning(NULL,"ERROR",str);
 }
 
+void MainWindow::relogin()
+{
+    FILE *fout = fopen("/root/program/orderBetalog.txt","a");
+    QMessageBox::information(NULL,"Succss","Login Success!");
+    timeval curtime;
+    gettimeofday(&curtime,NULL);
+    int milisec = curtime.tv_usec/1000;
+    tm *local = localtime(&curtime.tv_sec);
+    QString tempstr;
+    tempstr.sprintf("%02d:%02d:%02d.%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec);
+    ui->record->append(tempstr +" "+ QString::fromStdString(logindata) + " login Success");
+    fprintf(fout,"%s login success\n",logindata.c_str());
+    ui->login->setEnabled(false);
+    fclose(fout);
+}
+
 void MainWindow::on_sendNew_clicked()
 {
-    /*if(!login)
+    if(!havelogin)
     {
         showError("Please login!");
         return;
-    }*/
+    }
     if(ui->newscode->text().size()==0)
     {
         showError("Need Stock Code!");
@@ -173,7 +191,9 @@ void MainWindow::on_sendNew_clicked()
             return;
         }
     }
-    QMessageBox::information(NULL,"Send new order","Send this New Order?",QMessageBox::Yes | QMessageBox::No);
+    QMessageBox::StandardButton check = QMessageBox::information(NULL,"Send new order","Send this New Order?",QMessageBox::Yes | QMessageBox::No);
+    if(check == QMessageBox::No)
+        return;
     timeval curtime;
     gettimeofday(&curtime,NULL);
     int milisec = curtime.tv_usec/1000;
@@ -194,12 +214,262 @@ void MainWindow::on_sendNew_clicked()
     {
         order.set_side(tutorial::SideEnum::sSell);
     }
+
     //3
     order.set_symbol(ui->newscode->text().toStdString().c_str());
     //4
     order.set_orderqty(ui->newennum->text().toInt());
     //5
-    order.set_price(ui->newenprice->text().toDouble());
+    double newprice = ui->newenprice->text().toDouble();
+    //qDebug()<<"New Price : "<<newprice;
+    order.set_price(newprice);
+    //qDebug()<<"Set Price"<<order.price();
+    //6
+    if(ui->newortype->currentIndex()==0)
+        order.set_ordertype(tutorial::OrderTypeEnum::otMarket);
+    else
+        order.set_ordertype(tutorial::OrderTypeEnum::otLimit);
+    //7
+    //order.set_tseordertype("");
+    //8
+    if(ui->newrequest->currentIndex()==0)
+        order.set_timeinforce(tutorial::TimeInForceEnum::tifROD);
+    else if(ui->newrequest->currentIndex()==1)
+        order.set_timeinforce(tutorial::TimeInForceEnum::tifIOC);
+    else
+        order.set_timeinforce(tutorial::TimeInForceEnum::tifFOK);
+    //9
+    order.set_nid(129);
+    //10
+    if(ui->newmarket->currentIndex()==0)
+    {
+        if(ui->newentype->currentIndex()==0)
+            order.set_market(tutorial::MarketEnum::mTSE);
+        else
+            order.set_market(tutorial::MarketEnum::mTSE_ODD);
+    }
+    else
+    {
+        if(ui->newentype->currentIndex()==0)
+            order.set_market(tutorial::MarketEnum::mOTC);
+        else
+            order.set_market(tutorial::MarketEnum::mOTC_ODD);
+    }/**/
+    //order.set_market(tutorial::MarketEnum::mFutures);
+    //11
+    order.set_orderid("0");
+    //12
+    order.set_kind(tutorial::KindEnum::kNew);
+
+    emit senddata();
+}
+
+void MainWindow::fromtcp()
+{
+    if(reply.orderstatus()==2)
+    {
+        QStandardItemModel *model = (QStandardItemModel *)ui->nowentrust->model();
+        int rownum = model->rowCount();
+        QStandardItem *i0 = new QStandardItem(QString::fromStdString(reply.transacttime()));
+        QStandardItem *i1 = new QStandardItem(QString::fromStdString(reply.orderid()));
+        QStandardItem *i2 = new QStandardItem(QString::fromStdString(reply.symbol()));
+        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::TimeInForceEnum_Name(reply.timeinforce())));
+        QStandardItem *i4 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
+        QStandardItem *i5 = new QStandardItem(QString::number(reply.price()));
+        QStandardItem *i6 = new QStandardItem(QString::number(reply.orderqty()));
+        QStandardItem *i7 = new QStandardItem(QString::number(0));
+        QStandardItem *i8 = new QStandardItem(QString::number(reply.orderqty()));
+
+
+
+        model->QStandardItemModel::setItem(rownum,0,i0);
+        model->QStandardItemModel::setItem(rownum,1,i1);
+        model->QStandardItemModel::setItem(rownum,2,i2);
+        model->QStandardItemModel::setItem(rownum,3,i3);
+        model->QStandardItemModel::setItem(rownum,4,i4);
+        model->QStandardItemModel::setItem(rownum,5,i5);
+        model->QStandardItemModel::setItem(rownum,6,i6);
+        model->QStandardItemModel::setItem(rownum,7,i7);
+        model->QStandardItemModel::setItem(rownum,8,i8);
+
+        QPushButton *bm = new QPushButton("Send");
+        bm->setProperty("id",model->rowCount());
+        bm->setProperty("action","modify");
+        ui->nowentrust->setIndexWidget(model->index(rownum,10),bm);
+
+        QPushButton *bd = new QPushButton("delete");
+        bd->setProperty("id",model->rowCount());
+        bd->setProperty("action","Delete");
+        ui->nowentrust->setIndexWidget(model->index(rownum,11),bd);
+
+        connect(bd,SIGNAL(clicked()),this,SLOT(delbuttonclick()));
+    }
+    else if(reply.orderstatus()==7)
+    {
+        QStandardItemModel *nmodel = (QStandardItemModel *)ui->nowentrust->model();
+        int rownum;
+        for(rownum=0;rownum<nmodel->rowCount();rownum++)
+        {
+            if(reply.orderid().compare(nmodel->index(rownum,1).data().toString().toStdString())==0)
+                break;
+        }
+
+        QStandardItemModel *remodel = (QStandardItemModel *)ui->nowentrust->model();
+
+        QStandardItem *c7 = new QStandardItem(QString::number(nmodel->index(rownum,7).data().toInt()+reply.orderqty()));
+        remodel->QStandardItemModel::setItem(rownum,7,c7);
+        QStandardItem *c8 = new QStandardItem(QString::number(nmodel->index(rownum,6).data().toInt()-nmodel->index(rownum,7).data().toInt()));
+        remodel->QStandardItemModel::setItem(rownum,8,c8);
+
+        //insert to deal
+        QStandardItemModel *model = (QStandardItemModel *)ui->deal->model();
+        int dnum = model->rowCount();
+        QStandardItem *i0 = new QStandardItem(QString::fromStdString(reply.transacttime()));
+        QStandardItem *i1 = new QStandardItem(QString::fromStdString(reply.orderid()));
+        QStandardItem *i2 = new QStandardItem(QString::fromStdString(reply.symbol()));
+        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
+        QStandardItem *i4 = new QStandardItem(QString::number(reply.price()));
+        QStandardItem *i5 = new QStandardItem(QString::number(reply.orderqty()));
+
+        model->QStandardItemModel::setItem(dnum,0,i0);
+        model->QStandardItemModel::setItem(dnum,1,i1);
+        model->QStandardItemModel::setItem(dnum,2,i2);
+        model->QStandardItemModel::setItem(dnum,3,i3);
+        model->QStandardItemModel::setItem(dnum,4,i4);
+        model->QStandardItemModel::setItem(dnum,5,i5);
+
+
+    }
+    else if(reply.orderstatus()==8)
+    {
+        QStandardItemModel *nmodel = (QStandardItemModel *)ui->nowentrust->model();
+        for(int i=0;i<nmodel->rowCount();)
+        {
+            if(reply.orderid().compare(nmodel->index(i,1).data().toString().toStdString())==0)
+            {
+                QStandardItemModel *qmodel = (QStandardItemModel *)ui->passentrust->model();
+                int qnum = qmodel->rowCount();
+                QStandardItem *q0 = new QStandardItem(nmodel->index(i,0).data().toString());
+                QStandardItem *q1 = new QStandardItem(nmodel->index(i,1).data().toString());
+                QStandardItem *q2 = new QStandardItem(nmodel->index(i,2).data().toString());
+                QStandardItem *q3 = new QStandardItem(nmodel->index(i,4).data().toString());
+                QStandardItem *q4 = new QStandardItem(nmodel->index(i,5).data().toString());
+                QStandardItem *q5 = new QStandardItem(nmodel->index(i,6).data().toString());
+                QStandardItem *q6 = new QStandardItem(QString::fromStdString(tutorial::OrderStatusEnum_Name(reply.orderstatus())));
+                QStandardItem *q7 = new QStandardItem(QString::fromStdString(reply.text()));
+
+                qmodel->QStandardItemModel::setItem(qnum,0,q0);
+                qmodel->QStandardItemModel::setItem(qnum,1,q1);
+                qmodel->QStandardItemModel::setItem(qnum,2,q2);
+                qmodel->QStandardItemModel::setItem(qnum,3,q3);
+                qmodel->QStandardItemModel::setItem(qnum,4,q4);
+                qmodel->QStandardItemModel::setItem(qnum,5,q5);
+                qmodel->QStandardItemModel::setItem(qnum,6,q6);
+                qmodel->QStandardItemModel::setItem(qnum,7,q7);
+
+                nmodel->removeRow(i);
+            }
+            else
+            {
+                QStandardItemModel *model = (QStandardItemModel *)ui->nowentrust->model();
+
+                QPushButton *bm = new QPushButton("Send");
+                bm->setProperty("id",QString::number(i));
+                bm->setProperty("action","modify");
+                ui->nowentrust->setIndexWidget(model->index(i,10),bm);
+
+
+                QPushButton *bd = new QPushButton("Delete");
+                bd->setProperty("id",QString::number(i));
+                bd->setProperty("action","delete");
+                ui->nowentrust->setIndexWidget(model->index(i,11),bd);
+
+                connect(bd,SIGNAL(clicked()),this,SLOT(delbuttonclick()));
+
+                i++;
+            }
+        }
+
+        QStandardItemModel *model = (QStandardItemModel *)ui->deal->model();
+        int rownum = model->rowCount();
+        QStandardItem *i0 = new QStandardItem(QString::fromStdString(reply.transacttime()));
+        QStandardItem *i1 = new QStandardItem(QString::fromStdString(reply.orderid()));
+        QStandardItem *i2 = new QStandardItem(QString::fromStdString(reply.symbol()));
+        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
+        QStandardItem *i4 = new QStandardItem(QString::number(reply.price()));
+        QStandardItem *i5 = new QStandardItem(QString::number(reply.orderqty()));
+
+        model->QStandardItemModel::setItem(rownum,0,i0);
+        model->QStandardItemModel::setItem(rownum,1,i1);
+        model->QStandardItemModel::setItem(rownum,2,i2);
+        model->QStandardItemModel::setItem(rownum,3,i3);
+        model->QStandardItemModel::setItem(rownum,4,i4);
+        model->QStandardItemModel::setItem(rownum,5,i5);
+
+    }
+    else if(reply.orderstatus()==11)
+    {
+        QStandardItemModel *model = (QStandardItemModel *)ui->passentrust->model();
+        int rownum = model->rowCount();
+        QStandardItem *i0 = new QStandardItem(QString::fromStdString(reply.transacttime()));
+        QStandardItem *i1 = new QStandardItem(QString::fromStdString(reply.orderid()));
+        QStandardItem *i2 = new QStandardItem(QString::fromStdString(reply.symbol()));
+        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
+        QStandardItem *i4 = new QStandardItem(QString::number(reply.price()));
+        QStandardItem *i5 = new QStandardItem(QString::number(reply.orderqty()));
+        QStandardItem *i6 = new QStandardItem(QString::fromStdString(tutorial::OrderStatusEnum_Name(reply.orderstatus())));
+        QStandardItem *i7 = new QStandardItem(QString::fromStdString(reply.text()));
+
+        model->QStandardItemModel::setItem(rownum,0,i0);
+        model->QStandardItemModel::setItem(rownum,1,i1);
+        model->QStandardItemModel::setItem(rownum,2,i2);
+        model->QStandardItemModel::setItem(rownum,3,i3);
+        model->QStandardItemModel::setItem(rownum,4,i4);
+        model->QStandardItemModel::setItem(rownum,5,i5);
+        model->QStandardItemModel::setItem(rownum,6,i6);
+        model->QStandardItemModel::setItem(rownum,7,i7);
+
+    }
+    //return;
+}
+
+void MainWindow::delbuttonclick()
+{
+    QMessageBox::StandardButton check = QMessageBox::warning(NULL,"Delete order","Delete this Order?",QMessageBox::Yes | QMessageBox::No);
+    if(check == QMessageBox::No)
+        return;
+    QPushButton *btn =(QPushButton*)sender();
+    int rownum = btn->property("id").toInt();
+    //qDebug()<<rownum;
+    /*timeval curtime;
+    gettimeofday(&curtime,NULL);
+    int milisec = curtime.tv_usec/1000;
+    tm *local = localtime(&curtime.tv_sec);
+    QString tempstr;
+    tempstr.sprintf("%02d%02d%02d%03d%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec,0);
+
+    order.Clear();
+    //1
+    order.set_transacttime(tempstr.toStdString().c_str());
+    //2
+    if(ui->nowentrust->index(rownum,0).data().toString()==QString("sBuy"))
+    {
+        order.set_side(tutorial::SideEnum::sBuy);
+    }
+    else
+    {
+        order.set_side(tutorial::SideEnum::sSell);
+    }
+
+    //3
+    order.set_symbol(ui->newscode->text().toStdString().c_str());
+    //4
+    order.set_orderqty(ui->newennum->text().toInt());
+    //5
+    double newprice = ui->newenprice->text().toDouble();
+    //qDebug()<<"New Price : "<<newprice;
+    order.set_price(newprice);
+    //qDebug()<<"Set Price"<<order.price();
     //6
     if(ui->newortype->currentIndex()==0)
         order.set_ordertype(tutorial::OrderTypeEnum::otMarket);
@@ -231,10 +501,11 @@ void MainWindow::on_sendNew_clicked()
         else
             order.set_market(tutorial::MarketEnum::mOTC_ODD);
     }
+    //order.set_market(tutorial::MarketEnum::mFutures);
     //11
     order.set_orderid("0");
     //12
     order.set_kind(tutorial::KindEnum::kNew);
 
-    emit senddata();
+    emit senddata();*/
 }

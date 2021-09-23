@@ -23,6 +23,8 @@ private slots:
     void readyRead();
 signals:
     void sendError(QString str);
+    void relogin();
+    void fromtcp();
 };
 
 #endif // LINK_H

@@ -16,11 +16,11 @@ showthread::~showthread()
 void showthread::run()
 {
     //qDebug()<<"ShowUi ThreadId"<<QThread::currentThreadId();
-    for(int i=0;i<5;i++)
+    /*for(int i=0;i<5;i++)
     {
         sleep(1);
         s.runui(i);
-    }
+    }*/
     exec();
 }
 

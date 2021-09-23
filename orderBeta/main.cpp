@@ -7,25 +7,21 @@
 #include <queue>
 #include "SimulatorTradeProtos.pb.h"
 
-bool login = false;
+
+bool havelogin = false;
 std::queue<int> q;
+std::string logindata;
 tutorial::SimulatorTradeReply reply;
 tutorial::SimulatorTradeOrder order;
 
 int main(int argc, char *argv[])
 {
+    FILE *fout = fopen("/root/program/orderBetalog.txt","w");
+    fclose(fout);
     QApplication a(argc, argv);
     MainWindow w;
     showthread rr(&w);
     linkthread ll(&w);
-    //qDebug()<<"Main ThreadId"<<QThread::currentThreadId();
-    //QThread* thread = new QThread;
-
-    //QObject::connect(s,SIGNAL(sendshow()),&w,SLOT(getshow(int &)));
-    //QObject::connect(thread,&QThread::finished,s,&QThread::deleteLater);
-
-    //w.getshow.moveToThread(thread);
-    //thread->start();
     w.show();
     rr.start();
     ll.start();
