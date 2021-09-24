@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     //showui *s = new showui(this);
 
-    QStandardItemModel *rmodel = new QStandardItemModel(0,9,this);
+    QStandardItemModel *rmodel = new QStandardItemModel(0,10,this);
     rmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
     rmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("商品代號")));
     rmodel->setHorizontalHeaderItem(2,new QStandardItem(QString("市場")));
@@ -27,7 +27,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     rmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("買進價格")));
     rmodel->setHorizontalHeaderItem(7,new QStandardItem(QString("賣出張數")));
     rmodel->setHorizontalHeaderItem(8,new QStandardItem(QString("賣出價格")));
+    rmodel->setHorizontalHeaderItem(9,new QStandardItem(QString("")));
     ui->realtime->setModel(rmodel);
+
+
+
+
 
     QStandardItemModel *enmodel = new QStandardItemModel(0,12,this);
     enmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
@@ -122,6 +127,7 @@ void MainWindow::getshow(int k)
     QStandardItem *i7 = new QStandardItem("Sell price "+QString::number(k));
     QStandardItem *i8 = new QStandardItem("Sell Num "+QString::number(k));
 
+
     rmodel->QStandardItemModel::setItem(rownum,0,i0);
     rmodel->QStandardItemModel::setItem(rownum,1,i1);
     rmodel->QStandardItemModel::setItem(rownum,2,i2);
@@ -131,6 +137,11 @@ void MainWindow::getshow(int k)
     rmodel->QStandardItemModel::setItem(rownum,6,i6);
     rmodel->QStandardItemModel::setItem(rownum,7,i7);
     rmodel->QStandardItemModel::setItem(rownum,8,i8);
+
+    QPushButton *btn = new QPushButton("Delete");
+    btn->setProperty("id",rmodel->rowCount());
+    btn->setProperty("action","delete");
+    ui->realtime->setIndexWidget(rmodel->index(rownum,9),btn);
 
     return;
 }
@@ -147,7 +158,6 @@ void MainWindow::showError(QString str)
 
 void MainWindow::relogin()
 {
-    FILE *fout = fopen("/root/program/orderBetalog.txt","a");
     QMessageBox::information(NULL,"Succss","Login Success!");
     timeval curtime;
     gettimeofday(&curtime,NULL);
@@ -156,9 +166,7 @@ void MainWindow::relogin()
     QString tempstr;
     tempstr.sprintf("%02d:%02d:%02d.%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec);
     ui->record->append(tempstr +" "+ QString::fromStdString(logindata) + " login Success");
-    fprintf(fout,"%s login success\n",logindata.c_str());
     ui->login->setEnabled(false);
-    fclose(fout);
 }
 
 void MainWindow::on_sendNew_clicked()
@@ -513,8 +521,6 @@ void MainWindow::delbuttonclick()
 void MainWindow::serverfail(QString str)
 {
 
-    FILE *fout = fopen("/root/program/orderBetalog.txt","a");
-    QMessageBox::warning(NULL,"ERROR",str);
     timeval curtime;
     gettimeofday(&curtime,NULL);
     int milisec = curtime.tv_usec/1000;
@@ -522,6 +528,5 @@ void MainWindow::serverfail(QString str)
     QString tempstr;
     tempstr.sprintf("%02d:%02d:%02d.%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec);
     ui->record->append(tempstr +" "+ str);
-    fprintf(fout,"%s login success\n",logindata.c_str());
-    fclose(fout);
+    QMessageBox::warning(NULL,"ERROR",str);
 }

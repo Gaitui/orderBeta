@@ -31,7 +31,8 @@ SOURCES += \
     showthread.cpp \
     link.cpp \
     linkthread.cpp \
-    SimulatorTradeProtos.pb.cc
+    SimulatorTradeProtos.pb.cc \
+    log.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
     showthread.h \
     link.h \
     linkthread.h \
-    SimulatorTradeProtos.pb.h
+    SimulatorTradeProtos.pb.h \
+    log.h
 
 FORMS += \
         mainwindow.ui

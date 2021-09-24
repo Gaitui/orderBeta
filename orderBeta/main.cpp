@@ -6,6 +6,7 @@
 #include <QThread>
 #include <queue>
 #include "SimulatorTradeProtos.pb.h"
+#include "log.h"
 
 
 bool havelogin = false;
@@ -20,9 +21,11 @@ int main(int argc, char *argv[])
     fclose(fout);
     QApplication a(argc, argv);
     MainWindow w;
+    outlog lg;
     showthread rr(&w);
-    linkthread ll(&w);
+    linkthread ll(&w,&lg);
     w.show();
+    lg.start();
     rr.start();
     ll.start();
     return a.exec();

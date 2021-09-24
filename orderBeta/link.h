@@ -6,6 +6,7 @@
 #include <QHostAddress>
 #include <QByteArray>
 #include <fstream>
+#include "SimulatorTradeProtos.pb.h"
 
 class link : public QTcpSocket
 {
@@ -26,6 +27,8 @@ signals:
     void relogin();
     void fromtcp();
     void serverfail(QString);
+    void sendlog(QString);
+    void sendprotobuf(tutorial::SimulatorTradeReply);
 };
 
 #endif // LINK_H
