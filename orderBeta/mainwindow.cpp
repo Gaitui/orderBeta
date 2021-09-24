@@ -15,7 +15,6 @@ extern tutorial::SimulatorTradeReply reply;
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //showui *s = new showui(this);
 
     QStandardItemModel *rmodel = new QStandardItemModel(0,10,this);
     rmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
@@ -34,19 +33,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 
 
-    QStandardItemModel *enmodel = new QStandardItemModel(0,12,this);
+    QStandardItemModel *enmodel = new QStandardItemModel(0,14,this);
     enmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
     enmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("單號")));
     enmodel->setHorizontalHeaderItem(2,new QStandardItem(QString("商品代號")));
-    enmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("委託條件")));
-    enmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("買賣")));
-    enmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("委託價")));
-    enmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("委託數")));
-    enmodel->setHorizontalHeaderItem(7,new QStandardItem(QString("成交數")));
-    enmodel->setHorizontalHeaderItem(8,new QStandardItem(QString("剩餘數")));
-    enmodel->setHorizontalHeaderItem(9,new QStandardItem(QString("修改數")));
-    enmodel->setHorizontalHeaderItem(10,new QStandardItem(QString("送出")));
-    enmodel->setHorizontalHeaderItem(11,new QStandardItem(QString("刪除")));
+    enmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("市場")));
+    enmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("委託條件")));
+    enmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("買賣")));
+    enmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("委託價")));
+    enmodel->setHorizontalHeaderItem(7,new QStandardItem(QString("修改價格")));
+    enmodel->setHorizontalHeaderItem(8,new QStandardItem(QString("委託數")));
+    enmodel->setHorizontalHeaderItem(9,new QStandardItem(QString("成交數")));
+    enmodel->setHorizontalHeaderItem(10,new QStandardItem(QString("剩餘數")));
+    enmodel->setHorizontalHeaderItem(11,new QStandardItem(QString("修改數量")));
+    enmodel->setHorizontalHeaderItem(12,new QStandardItem(QString("送出")));
+    enmodel->setHorizontalHeaderItem(13,new QStandardItem(QString("刪除")));
     ui->nowentrust->setModel(enmodel);
 
     QStandardItemModel *dmodel = new QStandardItemModel(0,6,this);
@@ -281,12 +282,14 @@ void MainWindow::fromtcp()
         QStandardItem *i0 = new QStandardItem(QString::fromStdString(reply.transacttime()));
         QStandardItem *i1 = new QStandardItem(QString::fromStdString(reply.orderid()));
         QStandardItem *i2 = new QStandardItem(QString::fromStdString(reply.symbol()));
-        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::TimeInForceEnum_Name(reply.timeinforce())));
-        QStandardItem *i4 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
-        QStandardItem *i5 = new QStandardItem(QString::number(reply.price()));
-        QStandardItem *i6 = new QStandardItem(QString::number(reply.orderqty()));
-        QStandardItem *i7 = new QStandardItem(QString::number(0));
+        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::MarketEnum_Name(reply.market())));
+        QStandardItem *i4 = new QStandardItem(QString::fromStdString(tutorial::TimeInForceEnum_Name(reply.timeinforce())));
+        QStandardItem *i5 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
+        QStandardItem *i6 = new QStandardItem(QString::number(reply.price()));
+
         QStandardItem *i8 = new QStandardItem(QString::number(reply.orderqty()));
+        QStandardItem *i9 = new QStandardItem(QString::number(0));
+        QStandardItem *i10 = new QStandardItem(QString::number(reply.orderqty()));
 
 
 
@@ -297,18 +300,20 @@ void MainWindow::fromtcp()
         model->QStandardItemModel::setItem(rownum,4,i4);
         model->QStandardItemModel::setItem(rownum,5,i5);
         model->QStandardItemModel::setItem(rownum,6,i6);
-        model->QStandardItemModel::setItem(rownum,7,i7);
+
         model->QStandardItemModel::setItem(rownum,8,i8);
+        model->QStandardItemModel::setItem(rownum,9,i9);
+        model->QStandardItemModel::setItem(rownum,10,i10);
 
         QPushButton *bm = new QPushButton("Send");
         bm->setProperty("id",model->rowCount());
         bm->setProperty("action","modify");
-        ui->nowentrust->setIndexWidget(model->index(rownum,10),bm);
+        ui->nowentrust->setIndexWidget(model->index(rownum,12),bm);
 
         QPushButton *bd = new QPushButton("Delete");
         bd->setProperty("id",model->rowCount());
         bd->setProperty("action","Delete");
-        ui->nowentrust->setIndexWidget(model->index(rownum,11),bd);
+        ui->nowentrust->setIndexWidget(model->index(rownum,13),bd);
 
         connect(bd,SIGNAL(clicked()),this,SLOT(delbuttonclick()));
     }
@@ -324,10 +329,10 @@ void MainWindow::fromtcp()
 
         QStandardItemModel *remodel = (QStandardItemModel *)ui->nowentrust->model();
 
-        QStandardItem *c7 = new QStandardItem(QString::number(nmodel->index(rownum,7).data().toInt()+reply.orderqty()));
-        remodel->QStandardItemModel::setItem(rownum,7,c7);
-        QStandardItem *c8 = new QStandardItem(QString::number(nmodel->index(rownum,6).data().toInt()-nmodel->index(rownum,7).data().toInt()));
-        remodel->QStandardItemModel::setItem(rownum,8,c8);
+        QStandardItem *c9 = new QStandardItem(QString::number(nmodel->index(rownum,9).data().toInt()+reply.orderqty()));
+        remodel->QStandardItemModel::setItem(rownum,9,c9);
+        QStandardItem *c10 = new QStandardItem(QString::number(nmodel->index(rownum,8).data().toInt()-nmodel->index(rownum,9).data().toInt()));
+        remodel->QStandardItemModel::setItem(rownum,10,c10);
 
         //insert to deal
         QStandardItemModel *model = (QStandardItemModel *)ui->deal->model();
@@ -360,9 +365,9 @@ void MainWindow::fromtcp()
                 QStandardItem *q0 = new QStandardItem(nmodel->index(i,0).data().toString());
                 QStandardItem *q1 = new QStandardItem(nmodel->index(i,1).data().toString());
                 QStandardItem *q2 = new QStandardItem(nmodel->index(i,2).data().toString());
-                QStandardItem *q3 = new QStandardItem(nmodel->index(i,4).data().toString());
-                QStandardItem *q4 = new QStandardItem(nmodel->index(i,5).data().toString());
-                QStandardItem *q5 = new QStandardItem(nmodel->index(i,6).data().toString());
+                QStandardItem *q3 = new QStandardItem(nmodel->index(i,5).data().toString());
+                QStandardItem *q4 = new QStandardItem(nmodel->index(i,6).data().toString());
+                QStandardItem *q5 = new QStandardItem(nmodel->index(i,8).data().toString());
                 QStandardItem *q6 = new QStandardItem(QString::fromStdString(tutorial::OrderStatusEnum_Name(reply.orderstatus())));
                 QStandardItem *q7 = new QStandardItem(QString::fromStdString(reply.text()));
 
@@ -384,13 +389,13 @@ void MainWindow::fromtcp()
                 QPushButton *bm = new QPushButton("Send");
                 bm->setProperty("id",QString::number(i));
                 bm->setProperty("action","modify");
-                ui->nowentrust->setIndexWidget(model->index(i,10),bm);
+                ui->nowentrust->setIndexWidget(model->index(i,12),bm);
 
 
                 QPushButton *bd = new QPushButton("Delete");
                 bd->setProperty("id",QString::number(i));
                 bd->setProperty("action","delete");
-                ui->nowentrust->setIndexWidget(model->index(i,11),bd);
+                ui->nowentrust->setIndexWidget(model->index(i,13),bd);
 
                 connect(bd,SIGNAL(clicked()),this,SLOT(delbuttonclick()));
 
