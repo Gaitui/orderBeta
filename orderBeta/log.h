@@ -12,6 +12,8 @@ public:
     ~outlog();
 protected:
     void run();
+private:
+    FILE *fout = fopen("/root/program/orderBetalog.txt","a");
 private slots:
     void write(QString);
     void writeprotobuf(tutorial::SimulatorTradeReply);

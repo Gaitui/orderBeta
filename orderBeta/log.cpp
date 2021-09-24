@@ -8,23 +8,22 @@ void outlog::run()
 }
 outlog::~outlog()
 {
+    fclose(fout);
     this->quit();
     this->wait();
 }
 
 void outlog::write(QString str)
 {
-    FILE *fout = fopen("/root/program/orderBetalog.txt","a");
     timeval curtime;
     gettimeofday(&curtime,NULL);
     int milisec = curtime.tv_usec/1000;
     tm *local = localtime(&curtime.tv_sec);
     fprintf(fout,"[%02d:%02d:%02d.%03d] %s\n",local->tm_hour,local->tm_min,local->tm_sec,milisec,str.toStdString().c_str());
-    fclose(fout);
+    fflush(fout);
 }
 void outlog::writeprotobuf(tutorial::SimulatorTradeReply reply)
 {
-    FILE *fout = fopen("/root/program/orderBetalog.txt","a");
     timeval curtime;
     gettimeofday(&curtime,NULL);
     int milisec = curtime.tv_usec/1000;
@@ -46,5 +45,5 @@ void outlog::writeprotobuf(tutorial::SimulatorTradeReply reply)
     fprintf(fout,"%s ",reply.text().c_str());
     fprintf(fout,"%d ",reply.reportseq());
     fprintf(fout,"%s\n",tutorial::MarketEnum_Name(reply.market()).c_str());
-    fclose(fout);
+    fflush(fout);
 }
