@@ -24,9 +24,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_exit_clicked();
     void getshow(int num);
-    void on_login_clicked();
     void showError(QString);
     void on_sendNew_clicked();
     void relogin();

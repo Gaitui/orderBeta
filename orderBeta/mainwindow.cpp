@@ -92,24 +92,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->newennum->setValidator(new QIntValidator(1,1e9,this));
 
-    if(havelogin)
-    {
-        ui->login->setEnabled(false);
-    }
-    else
-    {
-        ui->login->setEnabled(true);
-    }
+    ui->sendNew->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::on_exit_clicked()
-{
-    close();
 }
 
 void MainWindow::getshow(int k)
@@ -147,11 +135,6 @@ void MainWindow::getshow(int k)
     return;
 }
 
-void MainWindow::on_login_clicked()
-{
-    emit sendlogin();
-}
-
 void MainWindow::showError(QString str)
 {
     QMessageBox::warning(NULL,"ERROR",str);
@@ -167,7 +150,7 @@ void MainWindow::relogin()
     QString tempstr;
     tempstr.sprintf("%02d:%02d:%02d.%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec);
     ui->record->append(tempstr +" "+ QString::fromStdString(logindata) + " login Success");
-    ui->login->setEnabled(false);
+    ui->sendNew->setEnabled(true);
 }
 
 void MainWindow::on_sendNew_clicked()
@@ -532,6 +515,6 @@ void MainWindow::serverfail(QString str)
     tm *local = localtime(&curtime.tv_sec);
     QString tempstr;
     tempstr.sprintf("%02d:%02d:%02d.%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec);
-    ui->record->append(tempstr +" "+ str);
+    ui->record->append(tempstr +" "+ str +" connect again in 5s.");
     QMessageBox::warning(NULL,"ERROR",str);
 }

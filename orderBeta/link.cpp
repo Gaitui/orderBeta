@@ -3,6 +3,7 @@
 #include "google/protobuf/text_format.h"
 #include <QString>
 #include <sstream>
+#include <unistd.h>
 
 extern tutorial::SimulatorTradeOrder order;
 extern tutorial::SimulatorTradeReply reply;
@@ -12,13 +13,19 @@ extern std::string logindata;
 link::link()
 {
     int timeout = 5000;
-    socket.connectToHost(QHostAddress("192.168.1.124"),8004);
-    if(!socket.waitForConnected(timeout))
+    while(f)
     {
-        emit serverfail(socket.errorString());
-        return;
+        socket.connectToHost(QHostAddress("192.168.1.124"),8004);
+        if(!socket.waitForConnected(timeout))
+        {
+            emit sendlog(socket.errorString());
+            emit serverfail(socket.errorString());
+            sleep(5);
+            continue;
+        }
+        f=false;
     }
-    f=false;
+    login();
     connect(&socket,SIGNAL(readyRead()),this,SLOT(readyRead()));
 }
 link::~link()
@@ -46,21 +53,6 @@ void link::login(void)
 }
 void link::writetohost(QString str)
 {
-    if(f)
-    {
-        int timeout = 5000;
-        socket.connectToHost(QHostAddress("192.168.1.124"),8004);
-        if(!socket.waitForConnected(timeout))
-        {
-            emit sendlog(socket.errorString());
-            emit serverfail(socket.errorString());
-            return;
-        }
-        f=false;
-        connect(&socket,SIGNAL(readyRead()),this,SLOT(readyRead()));
-        emit sendError("Server not ready!");
-        return;
-    }
     QByteArray w;
     int ssize = str.size();
     w.append(0x7e);
@@ -70,7 +62,7 @@ void link::writetohost(QString str)
         ssize>>=8;
     }
     w+=str.toUtf8();
-    qDebug()<<w.toHex();
+    //qDebug()<<w.toHex();
     socket.write(w);
 }
 void link::datatohost()
@@ -91,9 +83,9 @@ void link::datatohost()
 }
 void link::readyRead()
 {
-    qDebug()<<"Ready read";
+    //qDebug()<<"Ready read";
     QByteArray datas = socket.readAll();
-    qDebug()<<datas.toHex();
+    //qDebug()<<datas.toHex();
     for(int i=0;i<datas.size();)
     {
         if(datas[i]==0x7e)

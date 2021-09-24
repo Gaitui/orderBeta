@@ -4,7 +4,6 @@
 linkthread::linkthread(MainWindow *w,outlog *lg,QObject *parent) : QThread(parent)
 {
     connect(w,SIGNAL(sendlink(QString)),&l,SLOT(writetohost(QString)));
-    connect(w,SIGNAL(sendlogin()),&l,SLOT(login()));
     connect(w,SIGNAL(senddata()),&l,SLOT(datatohost()));
     connect(&l,SIGNAL(sendError(QString)),w,SLOT(showError(QString)));
     connect(&l,SIGNAL(relogin()),w,SLOT(relogin()));
