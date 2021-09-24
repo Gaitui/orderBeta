@@ -25,6 +25,11 @@ void outlog::write(QString str)
 void outlog::writeprotobuf(tutorial::SimulatorTradeReply reply)
 {
     FILE *fout = fopen("/root/program/orderBetalog.txt","a");
+    timeval curtime;
+    gettimeofday(&curtime,NULL);
+    int milisec = curtime.tv_usec/1000;
+    tm *local = localtime(&curtime.tv_sec);
+    fprintf(fout,"[%02d:%02d:%02d.%03d] ",local->tm_hour,local->tm_min,local->tm_sec,milisec);
     fprintf(fout,"%s ",reply.transacttime().c_str());
     fprintf(fout,"%s ",tutorial::SideEnum_Name(reply.side()).c_str());
     fprintf(fout,"%s ",reply.symbol().c_str());
