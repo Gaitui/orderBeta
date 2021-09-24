@@ -94,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 MainWindow::~MainWindow()
 {
-    qDebug()<<"Mainwindow shut down";
+    //qDebug()<<"Mainwindow shut down";
     delete ui;
 }
 
@@ -556,10 +556,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
     else if(btn == QMessageBox::Yes)
     {
-        /*qDebug()<<"Shut down";
+        //qDebug()<<"Shut down";
         shutdown = true;
         emit sendEnd();
-        emit udpEnd();*/
+        emit udpEnd();
         event->accept();
     }
 }

@@ -20,8 +20,10 @@ linkthread::linkthread(MainWindow *w, outlog *lg) : QThread(),con(false)
 }
 linkthread::~linkthread()
 {
-    socket->close();
-    qDebug()<<"linkthread shut down";
+    if(socket->state()==QTcpSocket::ConnectedState)
+        socket->disconnect();
+    socket->deleteLater();
+    qDebug()<<socket->state();
     this->wait();
     this->quit();
 }
@@ -55,8 +57,12 @@ void linkthread::run()
         }
     }
     if(shutdown)
-         exec();
-    //login();
+    {
+        //qDebug()<<"RR";
+        exit(0);
+    }
+
+    login();
     connect(socket,SIGNAL(readyRead()),this,SLOT(readyRead()));
     exec();
 }
@@ -74,9 +80,9 @@ void linkthread :: login(void)
     {
         fin>>logindata;
         writetohost(QString::fromStdString(logindata));
+        fin.close();
     }
-    fin.close();
-    exec();
+
 }
 
 void linkthread::writetohost(QString str)
@@ -92,7 +98,6 @@ void linkthread::writetohost(QString str)
     w+=str.toUtf8();
     socket->write(w);
     socket->flush();
-    exec();
 }
 
 void linkthread::datatohost(tutorial::SimulatorTradeOrder order)
@@ -110,7 +115,6 @@ void linkthread::datatohost(tutorial::SimulatorTradeOrder order)
         w.append(str[i]);
     socket->write(w);
     socket->flush();
-    exec();
 }
 void linkthread::readyRead()
 {
@@ -160,10 +164,8 @@ void linkthread::readyRead()
             i++;
         }
     }
-    exec();
 }
 void linkthread::receiveEnd()
 {
-    /*if(this->isRunning())
-        this->terminate();*/
+    exit(0);
 }

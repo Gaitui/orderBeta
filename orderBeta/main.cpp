@@ -22,13 +22,13 @@ int main(int argc, char *argv[])
     fclose(fout);
     QApplication a(argc, argv);
     MainWindow w;
-    //outlog ol;
+    outlog ol;
     udpthread mtse(&w,QHostAddress("226.0.100.100"),10000);
-    //linkthread lt(&w,&ol);
+    linkthread lt(&w,&ol);
 
-    //ol.start();
+    ol.start();
     mtse.start();
-    //lt.start();
+    lt.start();
     w.show();
     return a.exec();
 }

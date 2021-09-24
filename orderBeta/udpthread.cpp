@@ -4,14 +4,18 @@ extern bool shutdown;
 
 udpthread :: udpthread(MainWindow *w,QHostAddress groupAddress,int port):groupAddress(groupAddress),port(port),QThread()
 {
-    //connect(w,SIGNAL(udpEnd()),this,SLOT(receiveEnd()));
+    connect(w,SIGNAL(udpEnd()),this,SLOT(receiveEnd()));
 }
 
 udpthread :: ~udpthread()
 {
+    if(usocket->state() == QUdpSocket::ConnectedState)
+        usocket->disconnect();
+    usocket->deleteLater();
     qDebug()<<"udpthread shut down";
     this->wait();
     this->quit();
+
 }
 
 void udpthread :: run()
@@ -40,9 +44,8 @@ void udpthread::readyRead()
         std::string str = datagram.toStdString();
         printf("%02x\n",str[0]);
     }
-    exec();
 }
 void udpthread::receiveEnd()
 {
-    usocket->close();
+    exit(0);
 }

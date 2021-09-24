@@ -11,6 +11,7 @@ outlog::~outlog()
     fclose(fout);
     this->wait();
     this->quit();
+
 }
 
 void outlog::write(QString str)
