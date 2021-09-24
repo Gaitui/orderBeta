@@ -3,7 +3,7 @@
 #include <QThread>
 #include "link.h"
 #include "mainwindow.h"
-#include "log.h"
+#include "outlog.h"
 #include "SimulatorTradeProtos.pb.h"
 
 class linkthread : public QThread

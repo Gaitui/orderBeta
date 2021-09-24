@@ -6,7 +6,9 @@
 #include <QThread>
 #include <queue>
 #include "SimulatorTradeProtos.pb.h"
-#include "log.h"
+#include "outlog.h"
+#include "udpthread.h"
+#include <QHostAddress>
 
 
 bool havelogin = false;
@@ -22,10 +24,12 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     outlog lg;
+    udpthread mtse(QHostAddress("226.0.100.100"),10000);
     showthread rr(&w);
     linkthread ll(&w,&lg);
     w.show();
     lg.start();
+    mtse.start();
     rr.start();
     ll.start();
     return a.exec();

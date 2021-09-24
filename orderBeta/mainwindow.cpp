@@ -260,6 +260,35 @@ void MainWindow::fromtcp()
 {
     if(reply.orderstatus()==2)
     {
+        //find exist in realtime
+        QStandardItemModel *rmodel = (QStandardItemModel *)ui->realtime->model();
+        bool newread = true;
+        for(int i=0;i<rmodel->rowCount();i++)
+        {
+            if(reply.symbol().compare(rmodel->index(i,1).data().toString().toStdString())==0 &&
+               tutorial::MarketEnum_Name(reply.market()).compare(rmodel->index(i,2).data().toString().toStdString())==0)
+            {
+                newread =false;
+                break;
+            }
+        }
+        //add realtime
+        if(newread)
+        {
+            int rnum = rmodel->rowCount();
+            QStandardItem *r1 = new QStandardItem(QString::fromStdString(reply.symbol()));
+            QStandardItem *r2 = new QStandardItem(QString::fromStdString(tutorial::MarketEnum_Name(reply.market())));
+            rmodel->QStandardItemModel::setItem(rnum,1,r1);
+            rmodel->QStandardItemModel::setItem(rnum,2,r2);
+
+            QPushButton *btn = new QPushButton("Delete");
+            btn->setProperty("id",rnum);
+            btn->setProperty("action","delete");
+            ui->realtime->setIndexWidget(rmodel->index(rnum,9),btn);
+
+        }
+
+        //add nowentrust
         QStandardItemModel *model = (QStandardItemModel *)ui->nowentrust->model();
         int rownum = model->rowCount();
         QStandardItem *i0 = new QStandardItem(QString::fromStdString(reply.transacttime()));
@@ -273,8 +302,6 @@ void MainWindow::fromtcp()
         QStandardItem *i8 = new QStandardItem(QString::number(reply.orderqty()));
         QStandardItem *i9 = new QStandardItem(QString::number(0));
         QStandardItem *i10 = new QStandardItem(QString::number(reply.orderqty()));
-
-
 
         model->QStandardItemModel::setItem(rownum,0,i0);
         model->QStandardItemModel::setItem(rownum,1,i1);
@@ -302,6 +329,7 @@ void MainWindow::fromtcp()
     }
     else if(reply.orderstatus()==7)
     {
+        //modify nowentrust
         QStandardItemModel *nmodel = (QStandardItemModel *)ui->nowentrust->model();
         int rownum;
         for(rownum=0;rownum<nmodel->rowCount();rownum++)
@@ -309,9 +337,7 @@ void MainWindow::fromtcp()
             if(reply.orderid().compare(nmodel->index(rownum,1).data().toString().toStdString())==0)
                 break;
         }
-
         QStandardItemModel *remodel = (QStandardItemModel *)ui->nowentrust->model();
-
         QStandardItem *c9 = new QStandardItem(QString::number(nmodel->index(rownum,9).data().toInt()+reply.orderqty()));
         remodel->QStandardItemModel::setItem(rownum,9,c9);
         QStandardItem *c10 = new QStandardItem(QString::number(nmodel->index(rownum,8).data().toInt()-nmodel->index(rownum,9).data().toInt()));
@@ -338,6 +364,7 @@ void MainWindow::fromtcp()
     }
     else if(reply.orderstatus()==8)
     {
+        //add passentrust from now entrust
         QStandardItemModel *nmodel = (QStandardItemModel *)ui->nowentrust->model();
         for(int i=0;i<nmodel->rowCount();)
         {
@@ -386,6 +413,7 @@ void MainWindow::fromtcp()
             }
         }
 
+        //add deal
         QStandardItemModel *model = (QStandardItemModel *)ui->deal->model();
         int rownum = model->rowCount();
         QStandardItem *i0 = new QStandardItem(QString::fromStdString(reply.transacttime()));
@@ -405,6 +433,7 @@ void MainWindow::fromtcp()
     }
     else if(reply.orderstatus()==11)
     {
+        //add passentrust
         QStandardItemModel *model = (QStandardItemModel *)ui->passentrust->model();
         int rownum = model->rowCount();
         QStandardItem *i0 = new QStandardItem(QString::fromStdString(reply.transacttime()));

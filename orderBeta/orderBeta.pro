@@ -32,7 +32,11 @@ SOURCES += \
     link.cpp \
     linkthread.cpp \
     SimulatorTradeProtos.pb.cc \
-    log.cpp
+    outlog.cpp \
+    udpthread.cpp \
+    udpconnect.cpp \
+    head.cpp \
+    tools.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,7 +45,11 @@ HEADERS += \
     link.h \
     linkthread.h \
     SimulatorTradeProtos.pb.h \
-    log.h
+    outlog.h \
+    udpthread.h \
+    udpconnect.h \
+    head.h \
+    tools.h
 
 FORMS += \
         mainwindow.ui
