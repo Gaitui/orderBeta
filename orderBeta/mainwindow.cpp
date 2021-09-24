@@ -518,3 +518,16 @@ void MainWindow::serverfail(QString str)
     ui->record->append(tempstr +" "+ str +" connect again in 5s.");
     QMessageBox::warning(NULL,"ERROR",str);
 }
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QMessageBox::StandardButton btn=QMessageBox::information(NULL,"Close","Close Program?",QMessageBox::Yes | QMessageBox::No);
+    if(btn == QMessageBox::No)
+    {
+        event->ignore();
+    }
+    else if(btn == QMessageBox::Yes)
+    {
+        event->accept();
+    }
+}

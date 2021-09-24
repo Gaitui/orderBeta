@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QLineEdit>
 #include <sys/time.h>
+#include <QCloseEvent>
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +23,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+protected:
+    void closeEvent(QCloseEvent *event);
 private slots:
     void getshow(int num);
     void showError(QString);
