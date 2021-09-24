@@ -8,6 +8,9 @@
 #include "SimulatorTradeProtos.pb.h"
 #include <QEventLoop>
 #include "google/protobuf/text_format.h"
+#include <QHostAddress>
+#include <fstream>
+#include <sys/time.h>
 
 class linkthread : public QThread
 {
@@ -24,12 +27,13 @@ private slots:
     void writetohost(QString str);
     void datatohost(tutorial::SimulatorTradeOrder);
     void readyRead();
+    void receiveEnd();
 public slots:
     //void linktoserver();
 signals:
     void sendError(QString str);
     void relogin();
-    void fromtcp();
+    void fromtcp(tutorial::SimulatorTradeReply);
     void serverfail(QString);
     void sendlog(QString);
     void sendprotobuf(tutorial::SimulatorTradeReply);

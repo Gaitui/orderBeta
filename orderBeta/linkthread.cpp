@@ -3,16 +3,17 @@
 
 extern bool havelogin;
 extern std::string logindata;
+extern bool shutdown;
 
 linkthread::linkthread(MainWindow *w, outlog *lg) : QThread(),con(false)
 {
     //connect(w,SIGNAL(sendlogin()),this,SLOT(login()));
-    //connect(w,SIGNAL(linktoserver()),this,SLOT(load()));
+    connect(w,SIGNAL(sendEnd()),this,SLOT(receiveEnd()));
     connect(w,SIGNAL(sendlink(QString)),this,SLOT(writetohost(QString)));
-    connect(w,SIGNAL(senddata()),this,SLOT(datatohost()));
+    connect(w,SIGNAL(senddata(tutorial::SimulatorTradeOrder)),this,SLOT(datatohost(tutorial::SimulatorTradeOrder)));
     connect(this,SIGNAL(sendError(QString)),w,SLOT(showError(QString)));
     connect(this,SIGNAL(relogin()),w,SLOT(relogin()));
-    connect(this,SIGNAL(fromtcp()),w,SLOT(fromtcp()));
+    connect(this,SIGNAL(fromtcp(tutorial::SimulatorTradeReply)),w,SLOT(fromtcp(tutorial::SimulatorTradeReply)));
     connect(this,SIGNAL(serverfail(QString)),w,SLOT(serverfail(QString)));
     connect(this,SIGNAL(sendlog(QString)),lg,SLOT(write(QString)));
     connect(this,SIGNAL(sendprotobuf(tutorial::SimulatorTradeReply)),lg,SLOT(writeprotobuf(tutorial::SimulatorTradeReply)));
@@ -20,32 +21,42 @@ linkthread::linkthread(MainWindow *w, outlog *lg) : QThread(),con(false)
 linkthread::~linkthread()
 {
     socket->close();
+    qDebug()<<"linkthread shut down";
     this->wait();
     this->quit();
 }
 void linkthread::run()
 {
-    qDebug()<<"linkthread Current thread ID : "<<QThread::currentThreadId();
+    qDebug()<<"linkthread thread ID : "<<QThread::currentThreadId();
     socket = new QTcpSocket;
     int timeout = 5000;
-    while(!con)
+    time_t lsec,nsec;
+    nsec=time(NULL);
+    lsec=nsec-5;
+    while(!con && !shutdown)
     {
-        socket->connectToHost(QHostAddress("192.168.1.124"),8004);
-        if(socket->waitForConnected(timeout))
+        nsec=time(NULL);
+        if(difftime(nsec,lsec) >=5)
         {
-            qDebug("Connect!");
-            con=true;
-            break;
-        }
-        else
-        {
-            qDebug("Hello!");
-            emit sendlog(socket->errorString());
-            emit serverfail(socket->errorString());
-            sleep(5);
+            lsec = nsec;
+            socket->connectToHost(QHostAddress("192.168.1.124"),8004);
+            if(socket->waitForConnected(timeout))
+            {
+                qDebug("Connect!");
+                con=true;
+                break;
+            }
+            else
+            {
+                qDebug("Hello!");
+                emit sendlog(socket->errorString());
+                emit serverfail(socket->errorString());
+            }
         }
     }
-    login();
+    if(shutdown)
+         exec();
+    //login();
     connect(socket,SIGNAL(readyRead()),this,SLOT(readyRead()));
     exec();
 }
@@ -65,7 +76,7 @@ void linkthread :: login(void)
         writetohost(QString::fromStdString(logindata));
     }
     fin.close();
-    return;
+    exec();
 }
 
 void linkthread::writetohost(QString str)
@@ -81,6 +92,7 @@ void linkthread::writetohost(QString str)
     w+=str.toUtf8();
     socket->write(w);
     socket->flush();
+    exec();
 }
 
 void linkthread::datatohost(tutorial::SimulatorTradeOrder order)
@@ -97,6 +109,8 @@ void linkthread::datatohost(tutorial::SimulatorTradeOrder order)
     for(int i=0;i<str.size();i++)
         w.append(str[i]);
     socket->write(w);
+    socket->flush();
+    exec();
 }
 void linkthread::readyRead()
 {
@@ -136,7 +150,7 @@ void linkthread::readyRead()
             else
             {
                 reply.ParseFromString(dstr);
-                emit fromtcp();
+                emit fromtcp(reply);
                 emit sendprotobuf(reply);
             }
             i+=dlen;
@@ -146,4 +160,10 @@ void linkthread::readyRead()
             i++;
         }
     }
+    exec();
+}
+void linkthread::receiveEnd()
+{
+    /*if(this->isRunning())
+        this->terminate();*/
 }

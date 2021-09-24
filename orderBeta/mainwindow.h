@@ -1,6 +1,5 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QTableView>
@@ -11,6 +10,12 @@
 #include <QLineEdit>
 #include <sys/time.h>
 #include <QCloseEvent>
+#include "google/protobuf/text_format.h"
+#include "SimulatorTradeProtos.pb.h"
+#include <sstream>
+#include <QPushButton>
+#include <QAbstractItemView>
+#include <unistd.h>
 
 namespace Ui {
 class MainWindow;
@@ -30,15 +35,16 @@ private slots:
     void showError(QString);
     void on_sendNew_clicked();
     void relogin();
-    void fromtcp();
+    void fromtcp(tutorial::SimulatorTradeReply);
     void delbuttonclick();
     void serverfail(QString);
 
 signals:
     void sendlink(QString);
-    void sendlogin();
-    void senddata();
+    void senddata(tutorial::SimulatorTradeOrder);
     void linktoserver();
+    void sendEnd();
+    void udpEnd();
 private:
     Ui::MainWindow *ui;
 };

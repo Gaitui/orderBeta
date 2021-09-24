@@ -33,7 +33,6 @@ SOURCES += \
     SimulatorTradeProtos.pb.cc \
     outlog.cpp \
     udpthread.cpp \
-    udpconnect.cpp \
     head.cpp \
     tools.cpp
 
@@ -45,7 +44,6 @@ HEADERS += \
     SimulatorTradeProtos.pb.h \
     outlog.h \
     udpthread.h \
-    udpconnect.h \
     head.h \
     tools.h
 

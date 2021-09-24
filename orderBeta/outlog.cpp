@@ -1,13 +1,13 @@
 #include "outlog.h"
 
-outlog::outlog(QObject *parent): QThread(parent){}
-
-void outlog::run()
+outlog::outlog(QObject *parent): QThread(parent)
 {
-    exec();
+    fout = fopen("/root/program/orderBetalog.txt","a");
 }
+void outlog::run(){}
 outlog::~outlog()
 {
+    qDebug()<<"outlog shut down";
     fclose(fout);
     this->wait();
     this->quit();

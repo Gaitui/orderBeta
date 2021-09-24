@@ -1,22 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "SimulatorTradeProtos.pb.h"
-#include "google/protobuf/text_format.h"
-#include <sstream>
-#include <QPushButton>
-#include <QAbstractItemView>
-#include <unistd.h>
+
+
 
 extern bool havelogin;
 extern std::string logindata;
-extern std::queue<int> q;
-extern tutorial::SimulatorTradeOrder order;
-extern tutorial::SimulatorTradeReply reply;
+extern bool shutdown;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    qDebug()<<"Mainwindow thread ID : "<<QThread::currentThreadId();
     //set realtime
     QStandardItemModel *rmodel = new QStandardItemModel(0,10,this);
     rmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
@@ -100,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 MainWindow::~MainWindow()
 {
+    qDebug()<<"Mainwindow shut down";
     delete ui;
 }
 
@@ -196,7 +191,7 @@ void MainWindow::on_sendNew_clicked()
     QString tempstr;
     tempstr.sprintf("%02d%02d%02d%03d%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec,0);
 
-
+    tutorial::SimulatorTradeOrder order;
     order.Clear();
     //1
     order.set_transacttime(tempstr.toStdString().c_str());
@@ -256,10 +251,10 @@ void MainWindow::on_sendNew_clicked()
     //12
     order.set_kind(tutorial::KindEnum::kNew);
 
-    emit senddata();
+    emit senddata(order);
 }
 
-void MainWindow::fromtcp()
+void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
 {
     if(reply.orderstatus()==2)
     {
@@ -541,7 +536,6 @@ void MainWindow::delbuttonclick()
 
 void MainWindow::serverfail(QString str)
 {
-    qDebug()<<"MainWindow Current thread ID : "<<QThread::currentThreadId();
     //qDebug()<<"Hi!";
     timeval curtime;
     gettimeofday(&curtime,NULL);
@@ -551,8 +545,6 @@ void MainWindow::serverfail(QString str)
     tempstr.sprintf("%02d:%02d:%02d.%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec);
     ui->record->append(tempstr +" "+ str +" connect again in 5s.");
     //QMessageBox::warning(NULL,"ERROR",str);
-    //qDebug()<<str;
-    //emit linktoserver();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -564,6 +556,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
     else if(btn == QMessageBox::Yes)
     {
+        /*qDebug()<<"Shut down";
+        shutdown = true;
+        emit sendEnd();
+        emit udpEnd();*/
         event->accept();
     }
 }

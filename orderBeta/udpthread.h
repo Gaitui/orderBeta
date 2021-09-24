@@ -2,17 +2,26 @@
 #define UDPTHREAD_H
 #include <QThread>
 #include <QHostAddress>
-#include "udpconnect.h"
+#include <QUdpSocket>
+#include "mainwindow.h"
 
 class udpthread : public QThread
 {
     Q_OBJECT
 public:
-    explicit udpthread(QHostAddress,int,QObject *parent=0);
+    explicit udpthread(MainWindow*,QHostAddress,int);
     ~udpthread();
-    udpconnect u;
+    //udpconnect u;
+    QUdpSocket *usocket;
+    QHostAddress groupAddress;
+    int port;
 protected:
     void run();
+private slots:
+    void readyRead();
+    void receiveEnd();
+signals:
+    void sendUDP(QString);
 };
 
 #endif // UDPTHREAD_H

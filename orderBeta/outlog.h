@@ -3,6 +3,7 @@
 #include <QThread>
 #include <sys/time.h>
 #include "SimulatorTradeProtos.pb.h"
+#include <QDebug>
 
 class outlog : public QThread
 {
