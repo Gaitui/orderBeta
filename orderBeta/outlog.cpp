@@ -9,8 +9,8 @@ void outlog::run()
 outlog::~outlog()
 {
     fclose(fout);
-    this->quit();
     this->wait();
+    this->quit();
 }
 
 void outlog::write(QString str)

@@ -38,6 +38,7 @@ signals:
     void sendlink(QString);
     void sendlogin();
     void senddata();
+    void linktoserver();
 private:
     Ui::MainWindow *ui;
 };

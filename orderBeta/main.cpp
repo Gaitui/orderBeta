@@ -19,15 +19,16 @@ tutorial::SimulatorTradeOrder order;
 
 int main(int argc, char *argv[])
 {
+    qDebug()<<"main Current thread ID : "<<QThread::currentThreadId();
     FILE *fout = fopen("/root/program/orderBetalog.txt","w");
     fclose(fout);
     QApplication a(argc, argv);
     MainWindow w;
     outlog lg;
     udpthread mtse(QHostAddress("226.0.100.100"),10000);
+    w.show();
     showthread rr(&w);
     linkthread ll(&w,&lg);
-    w.show();
     lg.start();
     mtse.start();
     rr.start();

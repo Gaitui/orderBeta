@@ -29,7 +29,6 @@ SOURCES += \
         mainwindow.cpp \
     showui.cpp \
     showthread.cpp \
-    link.cpp \
     linkthread.cpp \
     SimulatorTradeProtos.pb.cc \
     outlog.cpp \
@@ -42,7 +41,6 @@ HEADERS += \
         mainwindow.h \
     showui.h \
     showthread.h \
-    link.h \
     linkthread.h \
     SimulatorTradeProtos.pb.h \
     outlog.h \

@@ -6,7 +6,7 @@
 class head
 {
 public:
-    head(u_char*,int);
+    head(std::string,int);
     int esc;
     int mlen;
     int mtype;

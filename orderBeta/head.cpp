@@ -1,6 +1,6 @@
 #include "head.h"
 
-head::head(u_char* pkt_data,int h)
+head::head(std::string pkt_data,int h)
 {
     esc=pkt_data[h];
     h++;

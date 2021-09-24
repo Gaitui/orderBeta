@@ -13,7 +13,7 @@ public:
 protected:
     void run();
 private:
-    FILE *fout = fopen("/root/program/orderBetalog.txt","a");
+    FILE *fout;
 private slots:
     void write(QString);
     void writeprotobuf(tutorial::SimulatorTradeReply);

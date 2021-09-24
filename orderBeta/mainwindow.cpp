@@ -5,6 +5,7 @@
 #include <sstream>
 #include <QPushButton>
 #include <QAbstractItemView>
+#include <unistd.h>
 
 extern bool havelogin;
 extern std::string logindata;
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     ui->setupUi(this);
 
+    //set realtime
     QStandardItemModel *rmodel = new QStandardItemModel(0,10,this);
     rmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
     rmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("商品代號")));
@@ -29,10 +31,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     rmodel->setHorizontalHeaderItem(9,new QStandardItem(QString("")));
     ui->realtime->setModel(rmodel);
 
-
-
-
-
+    //set nowentrust
     QStandardItemModel *enmodel = new QStandardItemModel(0,14,this);
     enmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
     enmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("單號")));
@@ -50,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     enmodel->setHorizontalHeaderItem(13,new QStandardItem(QString("刪除")));
     ui->nowentrust->setModel(enmodel);
 
+    //set deal
     QStandardItemModel *dmodel = new QStandardItemModel(0,6,this);
     dmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
     dmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("單號")));
@@ -57,9 +57,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     dmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("買賣")));
     dmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("成交價")));
     dmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("成交數")));
-
     ui->deal->setModel(dmodel);
 
+    //set passentrust
     QStandardItemModel *hmodel = new QStandardItemModel(0,8,this);
     hmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
     hmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("單號")));
@@ -71,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     hmodel->setHorizontalHeaderItem(7,new QStandardItem(QString("原因")));
     ui->passentrust->setModel(hmodel);
 
+    //set btns
     ui->newmarket->addItem("上市",0);
     ui->newmarket->addItem("上櫃",1);
 
@@ -87,12 +88,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->newbuysell->addItem("買",0);
     ui->newbuysell->addItem("賣",1);
 
-    QRegExp doublerx("[0-9]{0,6}[\.][0-9]{0,4}");
+    //set number range
+    QRegExp doublerx("[0-9]{0,6}[\.][0-9]{0,2}");
     ui->newenprice->setValidator(new QRegExpValidator(doublerx,this));
 
     ui->newennum->setValidator(new QIntValidator(1,1e9,this));
 
     ui->sendNew->setEnabled(false);
+
 }
 
 MainWindow::~MainWindow()
@@ -394,6 +397,7 @@ void MainWindow::fromtcp()
             }
             else
             {
+                //reset btn
                 QStandardItemModel *model = (QStandardItemModel *)ui->nowentrust->model();
 
                 QPushButton *bm = new QPushButton("Send");
@@ -537,7 +541,8 @@ void MainWindow::delbuttonclick()
 
 void MainWindow::serverfail(QString str)
 {
-
+    qDebug()<<"MainWindow Current thread ID : "<<QThread::currentThreadId();
+    //qDebug()<<"Hi!";
     timeval curtime;
     gettimeofday(&curtime,NULL);
     int milisec = curtime.tv_usec/1000;
@@ -545,7 +550,9 @@ void MainWindow::serverfail(QString str)
     QString tempstr;
     tempstr.sprintf("%02d:%02d:%02d.%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec);
     ui->record->append(tempstr +" "+ str +" connect again in 5s.");
-    QMessageBox::warning(NULL,"ERROR",str);
+    //QMessageBox::warning(NULL,"ERROR",str);
+    //qDebug()<<str;
+    //emit linktoserver();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
