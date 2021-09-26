@@ -44,13 +44,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->nowentrust->setModel(enmodel);
 
     //set deal
-    QStandardItemModel *dmodel = new QStandardItemModel(0,6,this);
+    QStandardItemModel *dmodel = new QStandardItemModel(0,7,this);
     dmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
     dmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("單號")));
     dmodel->setHorizontalHeaderItem(2,new QStandardItem(QString("商品代號")));
-    dmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("買賣")));
-    dmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("成交價")));
-    dmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("成交數")));
+    dmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("市場")));
+    dmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("買賣")));
+    dmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("成交價")));
+    dmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("成交數")));
     ui->deal->setModel(dmodel);
 
     //set passentrust
@@ -66,14 +67,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->passentrust->setModel(hmodel);
 
     //set btns
-    ui->newmarket->addItem("上市",0);
-    ui->newmarket->addItem("上櫃",1);
+    ui->newmarket->addItem("上市/整股",0);
+    ui->newmarket->addItem("上市/零股",1);
+    ui->newmarket->addItem("上櫃/整股",2);
+    ui->newmarket->addItem("上櫃/零股",3);
 
     ui->newortype->addItem("市價",0);
     ui->newortype->addItem("限價",1);
 
-    ui->newentype->addItem("整股",0);
-    ui->newentype->addItem("零股",1);
+    /*ui->newentype->addItem("整股",0);
+    ui->newentype->addItem("零股",1);*/
 
     ui->newrequest->addItem("ROD",0);
     ui->newrequest->addItem("IOC",1);
@@ -153,11 +156,6 @@ void MainWindow::relogin()
 
 void MainWindow::on_sendNew_clicked()
 {
-    if(!havelogin)
-    {
-        showError("Please login!");
-        return;
-    }
     if(ui->newscode->text().size()==0)
     {
         showError("Need Stock Code!");
@@ -233,18 +231,20 @@ void MainWindow::on_sendNew_clicked()
     //10
     if(ui->newmarket->currentIndex()==0)
     {
-        if(ui->newentype->currentIndex()==0)
-            order.set_market(tutorial::MarketEnum::mTSE);
-        else
-            order.set_market(tutorial::MarketEnum::mTSE_ODD);
+        order.set_market(tutorial::MarketEnum::mTSE);
     }
-    else
+    else if(ui->newmarket->currentIndex()==1)
     {
-        if(ui->newentype->currentIndex()==0)
-            order.set_market(tutorial::MarketEnum::mOTC);
-        else
+        order.set_market(tutorial::MarketEnum::mTSE_ODD);
+    }
+    else if(ui->newmarket->currentIndex()==2)
+    {
+        order.set_market(tutorial::MarketEnum::mOTC);
+    }
+    else if(ui->newmarket->currentIndex()==3)
+    {
             order.set_market(tutorial::MarketEnum::mOTC_ODD);
-    }/**/
+    }
     //order.set_market(tutorial::MarketEnum::mFutures);
     //11
     order.set_orderid("0");
@@ -418,9 +418,10 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
         QStandardItem *i0 = new QStandardItem(QString::fromStdString(reply.transacttime()));
         QStandardItem *i1 = new QStandardItem(QString::fromStdString(reply.orderid()));
         QStandardItem *i2 = new QStandardItem(QString::fromStdString(reply.symbol()));
-        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
-        QStandardItem *i4 = new QStandardItem(QString::number(reply.price()));
-        QStandardItem *i5 = new QStandardItem(QString::number(reply.orderqty()));
+        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::MarketEnum_Name(reply.market())));
+        QStandardItem *i4 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
+        QStandardItem *i5 = new QStandardItem(QString::number(reply.price()));
+        QStandardItem *i6 = new QStandardItem(QString::number(reply.orderqty()));
 
         model->QStandardItemModel::setItem(rownum,0,i0);
         model->QStandardItemModel::setItem(rownum,1,i1);
@@ -428,6 +429,7 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
         model->QStandardItemModel::setItem(rownum,3,i3);
         model->QStandardItemModel::setItem(rownum,4,i4);
         model->QStandardItemModel::setItem(rownum,5,i5);
+        model->QStandardItemModel::setItem(rownum,6,i6);
 
     }
     else if(reply.orderstatus()==11)
