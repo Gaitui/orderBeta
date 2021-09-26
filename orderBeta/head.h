@@ -6,7 +6,7 @@
 class head
 {
 public:
-    head(std::string,int);
+    head();
     int esc;
     int mlen;
     int mtype;
@@ -14,6 +14,7 @@ public:
     int mver;
     int mseq;
     tools t;
+    void decode(std::string,int);
 };
 
 #endif // HEAD_H

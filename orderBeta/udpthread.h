@@ -4,6 +4,8 @@
 #include <QHostAddress>
 #include <QUdpSocket>
 #include "mainwindow.h"
+#include "head.h"
+#include "data.h"
 
 class udpthread : public QThread
 {

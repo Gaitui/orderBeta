@@ -1,6 +1,8 @@
 #include "head.h"
 
-head::head(std::string pkt_data,int h)
+head::head(){}
+
+void head::decode(std::string pkt_data,int h)
 {
     esc=pkt_data[h];
     h++;

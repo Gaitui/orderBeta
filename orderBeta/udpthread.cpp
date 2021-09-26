@@ -12,7 +12,7 @@ udpthread :: ~udpthread()
     if(usocket->state() == QUdpSocket::ConnectedState)
         usocket->disconnect();
     usocket->deleteLater();
-    qDebug()<<"udpthread shut down";
+    //qDebug()<<"udpthread shut down";
     this->wait();
     this->quit();
 
@@ -20,8 +20,8 @@ udpthread :: ~udpthread()
 
 void udpthread :: run()
 {
-    qDebug()<<groupAddress;
-    qDebug()<<port;
+    //qDebug()<<groupAddress;
+    //qDebug()<<port;
     usocket = new QUdpSocket;
     usocket->bind(QHostAddress::AnyIPv4,port,QUdpSocket::ShareAddress);
     usocket->joinMulticastGroup(groupAddress);
@@ -41,8 +41,32 @@ void udpthread::readyRead()
         qDebug()<<"Message From "<<sender.toString();
         qDebug()<<"Port From "<<senderport;
         qDebug()<<"Message :: "<<datagram.toHex();
-        std::string str = datagram.toStdString();
-        printf("%02x\n",str[0]);
+        std::string pkt_data = datagram.toStdString();
+        //printf("%02x\n",str[0]);
+        int h=0;
+        int len = pkt_data.size();
+        while(h<len)
+        {
+            if(pkt_data[h]==27)
+            {
+                if(h+10<=len)
+                {
+                    head dhead;
+                    dhead.decode(pkt_data,h);
+                    if(h+dhead.mlen<=len && pkt_data[h+dhead.mlen-2]==0x0d && pkt_data[h+dhead.mlen-1]==0x0a)
+                    {
+                        data newdata;
+                        newdata.dhead = dhead;
+                        for(int i=0;i<dhead.mlen;i++)
+                        {
+                            newdata.pkt_data+=pkt_data[h+i];
+                        }
+                    }
+                    h+=dhead.mlen-1;
+                }
+            }
+            h++;
+        }
     }
 }
 void udpthread::receiveEnd()

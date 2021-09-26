@@ -34,7 +34,8 @@ SOURCES += \
     outlog.cpp \
     udpthread.cpp \
     head.cpp \
-    tools.cpp
+    tools.cpp \
+    data.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -45,7 +46,8 @@ HEADERS += \
     outlog.h \
     udpthread.h \
     head.h \
-    tools.h
+    tools.h \
+    data.h
 
 FORMS += \
         mainwindow.ui
