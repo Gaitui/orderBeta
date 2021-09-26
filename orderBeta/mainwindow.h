@@ -16,6 +16,7 @@
 #include <QPushButton>
 #include <QAbstractItemView>
 #include <unistd.h>
+#include "addtrackdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -38,7 +39,9 @@ private slots:
     void fromtcp(tutorial::SimulatorTradeReply);
     void delbuttonclick();
     void serverfail(QString);
-
+    void on_addTrack_clicked();
+    void getnewtrack();
+    void deltrack();
 signals:
     void sendlink(QString);
     void senddata(tutorial::SimulatorTradeOrder);
@@ -47,6 +50,7 @@ signals:
     void udpEnd();
 private:
     Ui::MainWindow *ui;
+    addTrackDialog newtrack;
 };
 
 #endif // MAINWINDOW_H

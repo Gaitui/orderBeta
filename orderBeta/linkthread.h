@@ -2,7 +2,6 @@
 #define LINKTHREAD_H
 #include <QThread>
 #include <QTcpSocket>
-#include "link.h"
 #include "mainwindow.h"
 #include "outlog.h"
 #include "SimulatorTradeProtos.pb.h"

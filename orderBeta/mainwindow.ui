@@ -265,7 +265,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="addTrack">
               <property name="text">
                <string>新增追蹤</string>
               </property>
@@ -387,7 +387,7 @@
    </layout>
    <zorder></zorder>
    <zorder>horizontalSpacer</zorder>
-   <zorder>pushButton</zorder>
+   <zorder>addTrack</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

@@ -35,7 +35,8 @@ SOURCES += \
     udpthread.cpp \
     head.cpp \
     tools.cpp \
-    data.cpp
+    data.cpp \
+    addtrackdialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -47,7 +48,8 @@ HEADERS += \
     udpthread.h \
     head.h \
     tools.h \
-    data.h
+    data.h \
+    addtrackdialog.h
 
 FORMS += \
         mainwindow.ui

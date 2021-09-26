@@ -10,7 +10,10 @@ extern bool shutdown;
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    qDebug()<<"Mainwindow thread ID : "<<QThread::currentThreadId();
+    //qDebug()<<"Mainwindow thread ID : "<<QThread::currentThreadId();
+
+    connect(&newtrack.okbtn,SIGNAL(clicked()),this,SLOT(getnewtrack()));
+
     //set realtime
     QStandardItemModel *rmodel = new QStandardItemModel(0,10,this);
     rmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
@@ -257,33 +260,6 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
 {
     if(reply.orderstatus()==2)
     {
-        //find exist in realtime
-        QStandardItemModel *rmodel = (QStandardItemModel *)ui->realtime->model();
-        bool newread = true;
-        for(int i=0;i<rmodel->rowCount();i++)
-        {
-            if(reply.symbol().compare(rmodel->index(i,1).data().toString().toStdString())==0 &&
-               tutorial::MarketEnum_Name(reply.market()).compare(rmodel->index(i,2).data().toString().toStdString())==0)
-            {
-                newread =false;
-                break;
-            }
-        }
-        //add realtime
-        if(newread)
-        {
-            int rnum = rmodel->rowCount();
-            QStandardItem *r1 = new QStandardItem(QString::fromStdString(reply.symbol()));
-            QStandardItem *r2 = new QStandardItem(QString::fromStdString(tutorial::MarketEnum_Name(reply.market())));
-            rmodel->QStandardItemModel::setItem(rnum,1,r1);
-            rmodel->QStandardItemModel::setItem(rnum,2,r2);
-
-            QPushButton *btn = new QPushButton("Delete");
-            btn->setProperty("id",rnum);
-            btn->setProperty("action","delete");
-            ui->realtime->setIndexWidget(rmodel->index(rnum,9),btn);
-
-        }
 
         //add nowentrust
         QStandardItemModel *model = (QStandardItemModel *)ui->nowentrust->model();
@@ -572,3 +548,88 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->accept();
     }
 }
+
+void MainWindow::on_addTrack_clicked()
+{
+    newtrack.exec();
+}
+
+void MainWindow::getnewtrack()
+{
+    //qDebug()<<"EE";
+    if(newtrack.addscode.text().size()==0)
+    {
+        showError("Need Stock Code!");
+    }
+    else
+    {
+        //find exist in realtime
+        QStandardItemModel *rmodel = (QStandardItemModel *)ui->realtime->model();
+        bool newread = true;
+        for(int i=0;i<rmodel->rowCount();i++)
+        {
+            if(newtrack.addscode.text().compare(rmodel->index(i,1).data().toString())==0)
+            {
+                if((rmodel->index(i,2).data().toString().compare("mTSE")==0 && newtrack.addmarket.currentIndex()==0)
+                 ||(rmodel->index(i,2).data().toString().compare("mOTC")==0 && newtrack.addmarket.currentIndex()==1)
+                 ||(rmodel->index(i,2).data().toString().compare("mTSE_ODD")==0 && newtrack.addmarket.currentIndex()==2)
+                 ||(rmodel->index(i,2).data().toString().compare("mOTC_ODD")==0 && newtrack.addmarket.currentIndex()==3))
+                {
+                    newread =false;
+                    break;
+                }
+            }
+        }
+        //add realtime
+        newtrack.accept();
+        if(newread)
+        {
+            int rnum = rmodel->rowCount();
+            QStandardItem *r1 = new QStandardItem(newtrack.addscode.text());
+            QStandardItem *r2;
+            if(newtrack.addmarket.currentIndex()==0)
+                r2= new QStandardItem("mTSE");
+            else if(newtrack.addmarket.currentIndex()==1)
+                r2 = new QStandardItem("mOTC");
+            else if(newtrack.addmarket.currentIndex()==2)
+                r2 = new QStandardItem("mTSE_ODD");
+            else if(newtrack.addmarket.currentIndex()==3)
+                r2 = new QStandardItem("mOTC_ODD");
+
+            rmodel->QStandardItemModel::setItem(rnum,1,r1);
+            rmodel->QStandardItemModel::setItem(rnum,2,r2);
+
+            QPushButton *btn = new QPushButton("Delete");
+            btn->setProperty("id",rnum);
+            btn->setProperty("action","delete");
+
+            connect(btn,SIGNAL(clicked()),this,SLOT(deltrack()));
+            ui->realtime->setIndexWidget(rmodel->index(rnum,9),btn);
+        }
+        else
+        {
+            QMessageBox::information(NULL,"Information","Already Track!");
+        }
+
+    }
+}
+void MainWindow::deltrack()
+{
+    QMessageBox::StandardButton checkbtn=QMessageBox::information(NULL,"Delete track","Delete this track?",QMessageBox::Yes | QMessageBox::No);
+    if(checkbtn == QMessageBox::Yes)
+    {
+        QPushButton *btn = (QPushButton *)sender();
+        QStandardItemModel *rmodel = (QStandardItemModel *)ui->realtime->model();
+        rmodel->removeRow(btn->property("id").toInt());
+        for(int i=btn->property("id").toInt();i<rmodel->rowCount();i++)
+        {
+            QPushButton *btn = new QPushButton("Delete");
+            btn->setProperty("id",i);
+            btn->setProperty("action","delete");
+
+            connect(btn,SIGNAL(clicked()),this,SLOT(deltrack()));
+            ui->realtime->setIndexWidget(rmodel->index(i,9),btn);
+        }
+    }
+}
+
