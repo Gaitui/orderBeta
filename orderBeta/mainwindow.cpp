@@ -55,18 +55,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->deal->setModel(dmodel);
 
     //set passentrust
-    QStandardItemModel *hmodel = new QStandardItemModel(0,8,this);
+    QStandardItemModel *hmodel = new QStandardItemModel(0,10,this);
     hmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
     hmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("單號")));
     hmodel->setHorizontalHeaderItem(2,new QStandardItem(QString("商品代號")));
-    hmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("買賣")));
-    hmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("委託價")));
-    hmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("數量")));
-    hmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("狀態")));
-    hmodel->setHorizontalHeaderItem(7,new QStandardItem(QString("原因")));
+    hmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("市場")));
+    hmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("委託條件")));
+    hmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("買賣")));
+    hmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("委託價")));
+    hmodel->setHorizontalHeaderItem(7,new QStandardItem(QString("數量")));
+    hmodel->setHorizontalHeaderItem(8,new QStandardItem(QString("狀態")));
+    hmodel->setHorizontalHeaderItem(9,new QStandardItem(QString("原因")));
     ui->passentrust->setModel(hmodel);
 
-    //set btns
+    //set newoder
     ui->newmarket->addItem("上市/整股",0);
     ui->newmarket->addItem("上市/零股",1);
     ui->newmarket->addItem("上櫃/整股",2);
@@ -74,9 +76,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->newortype->addItem("市價",0);
     ui->newortype->addItem("限價",1);
-
-    /*ui->newentype->addItem("整股",0);
-    ui->newentype->addItem("零股",1);*/
 
     ui->newrequest->addItem("ROD",0);
     ui->newrequest->addItem("IOC",1);
@@ -373,11 +372,13 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
                 QStandardItem *q0 = new QStandardItem(nmodel->index(i,0).data().toString());
                 QStandardItem *q1 = new QStandardItem(nmodel->index(i,1).data().toString());
                 QStandardItem *q2 = new QStandardItem(nmodel->index(i,2).data().toString());
-                QStandardItem *q3 = new QStandardItem(nmodel->index(i,5).data().toString());
-                QStandardItem *q4 = new QStandardItem(nmodel->index(i,6).data().toString());
-                QStandardItem *q5 = new QStandardItem(nmodel->index(i,8).data().toString());
-                QStandardItem *q6 = new QStandardItem(QString::fromStdString(tutorial::OrderStatusEnum_Name(reply.orderstatus())));
-                QStandardItem *q7 = new QStandardItem(QString::fromStdString(reply.text()));
+                QStandardItem *q3 = new QStandardItem(nmodel->index(i,3).data().toString());
+                QStandardItem *q4 = new QStandardItem(nmodel->index(i,4).data().toString());
+                QStandardItem *q5 = new QStandardItem(nmodel->index(i,5).data().toString());
+                QStandardItem *q6 = new QStandardItem(nmodel->index(i,6).data().toString());
+                QStandardItem *q7 = new QStandardItem(nmodel->index(i,8).data().toString());
+                QStandardItem *q8 = new QStandardItem(QString::fromStdString(tutorial::OrderStatusEnum_Name(reply.orderstatus())));
+                QStandardItem *q9 = new QStandardItem(QString::fromStdString(reply.text()));
 
                 qmodel->QStandardItemModel::setItem(qnum,0,q0);
                 qmodel->QStandardItemModel::setItem(qnum,1,q1);
@@ -387,6 +388,8 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
                 qmodel->QStandardItemModel::setItem(qnum,5,q5);
                 qmodel->QStandardItemModel::setItem(qnum,6,q6);
                 qmodel->QStandardItemModel::setItem(qnum,7,q7);
+                qmodel->QStandardItemModel::setItem(qnum,8,q8);
+                qmodel->QStandardItemModel::setItem(qnum,9,q9);
 
                 nmodel->removeRow(i);
             }
@@ -440,11 +443,13 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
         QStandardItem *i0 = new QStandardItem(QString::fromStdString(reply.transacttime()));
         QStandardItem *i1 = new QStandardItem(QString::fromStdString(reply.orderid()));
         QStandardItem *i2 = new QStandardItem(QString::fromStdString(reply.symbol()));
-        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
-        QStandardItem *i4 = new QStandardItem(QString::number(reply.price()));
-        QStandardItem *i5 = new QStandardItem(QString::number(reply.orderqty()));
-        QStandardItem *i6 = new QStandardItem(QString::fromStdString(tutorial::OrderStatusEnum_Name(reply.orderstatus())));
-        QStandardItem *i7 = new QStandardItem(QString::fromStdString(reply.text()));
+        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::MarketEnum_Name(reply.market())));
+        QStandardItem *i4 = new QStandardItem(QString::fromStdString(tutorial::TimeInForceEnum_Name(reply.timeinforce())));
+        QStandardItem *i5 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
+        QStandardItem *i6 = new QStandardItem(QString::number(reply.price()));
+        QStandardItem *i7 = new QStandardItem(QString::number(reply.orderqty()));
+        QStandardItem *i8 = new QStandardItem(QString::fromStdString(tutorial::OrderStatusEnum_Name(reply.orderstatus())));
+        QStandardItem *i9 = new QStandardItem(QString::fromStdString(reply.text()));
 
         model->QStandardItemModel::setItem(rownum,0,i0);
         model->QStandardItemModel::setItem(rownum,1,i1);
@@ -454,6 +459,8 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
         model->QStandardItemModel::setItem(rownum,5,i5);
         model->QStandardItemModel::setItem(rownum,6,i6);
         model->QStandardItemModel::setItem(rownum,7,i7);
+        model->QStandardItemModel::setItem(rownum,8,i8);
+        model->QStandardItemModel::setItem(rownum,9,i9);
 
     }
     //return;
