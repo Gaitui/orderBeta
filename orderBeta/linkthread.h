@@ -11,38 +11,27 @@
 #include <fstream>
 #include <sys/time.h>
 #include <ostream>
-//#include "link.h"
-
-/*class linkthread : public QThread
-{
-    Q_OBJECT
-public:
-    explicit linkthread(MainWindow*,outlog*);
-    ~linkthread();
-protected:
-    void run();
-private slots:
-    void receiveEnd();
-};*/
-
+#include "timer.h"
 
 
 class linkthread : public QThread
 {
     Q_OBJECT
 public:
-    explicit linkthread(MainWindow*,outlog*);
+    explicit linkthread(MainWindow*,outlog*,Timer*);
     ~linkthread();
     QTcpSocket *socket;
     bool con;
 protected:
     void run();
+    void inisocket();
 private slots:
     void login();
     void writetohost(QString str);
     void datatohost(tutorial::SimulatorTradeOrder);
     void readyRead();
     void receiveEnd();
+    void checkconnect();
 public slots:
     //void linktoserver();
 signals:

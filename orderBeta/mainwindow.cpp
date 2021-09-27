@@ -15,17 +15,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(&newtrack.okbtn,SIGNAL(clicked()),this,SLOT(getaddtrack()));
 
     //set realtime
-    QStandardItemModel *rmodel = new QStandardItemModel(0,10,this);
+    QStandardItemModel *rmodel = new QStandardItemModel(0,12,this);
     rmodel->setHorizontalHeaderItem(0,new QStandardItem(QString("時間")));
     rmodel->setHorizontalHeaderItem(1,new QStandardItem(QString("商品代號")));
     rmodel->setHorizontalHeaderItem(2,new QStandardItem(QString("市場")));
-    rmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("成交量")));
-    rmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("成交價")));
-    rmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("買進張數")));
-    rmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("買進價格")));
-    rmodel->setHorizontalHeaderItem(7,new QStandardItem(QString("賣出張數")));
-    rmodel->setHorizontalHeaderItem(8,new QStandardItem(QString("賣出價格")));
-    rmodel->setHorizontalHeaderItem(9,new QStandardItem(QString("")));
+    rmodel->setHorizontalHeaderItem(3,new QStandardItem(QString("漲停價")));
+    rmodel->setHorizontalHeaderItem(4,new QStandardItem(QString("跌停價")));
+    rmodel->setHorizontalHeaderItem(5,new QStandardItem(QString("成交量")));
+    rmodel->setHorizontalHeaderItem(6,new QStandardItem(QString("成交價")));
+    rmodel->setHorizontalHeaderItem(7,new QStandardItem(QString("買進張數")));
+    rmodel->setHorizontalHeaderItem(8,new QStandardItem(QString("買進價格")));
+    rmodel->setHorizontalHeaderItem(9,new QStandardItem(QString("賣出張數")));
+    rmodel->setHorizontalHeaderItem(10,new QStandardItem(QString("賣出價格")));
+    rmodel->setHorizontalHeaderItem(11,new QStandardItem(QString("")));
     ui->realtime->setModel(rmodel);
 
     //set nowentrust
@@ -527,7 +529,6 @@ void MainWindow::delbuttonclick()
 
 void MainWindow::serverfail(QString str)
 {
-    //qDebug()<<"Hi!";
     timeval curtime;
     gettimeofday(&curtime,NULL);
     int milisec = curtime.tv_usec/1000;
@@ -535,7 +536,7 @@ void MainWindow::serverfail(QString str)
     QString tempstr;
     tempstr.sprintf("%02d:%02d:%02d.%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec);
     ui->record->append(tempstr +" "+ str +" connect again in 5s.");
-    //QMessageBox::warning(NULL,"ERROR",str);
+    ui->sendNew->setEnabled(false);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -664,8 +665,8 @@ void MainWindow::getnewtrack(Data newdata)
                 {
                     QStandardItem *r3 = new QStandardItem(QString::number(new06.rnum[j]));
                     QStandardItem *r4 = new QStandardItem(QString::number(new06.rprice[j],'d',4));
-                    rmodel->QStandardItemModel::setItem(i,3,r3);
-                    rmodel->QStandardItemModel::setItem(i,4,r4);
+                    rmodel->QStandardItemModel::setItem(i,5,r3);
+                    rmodel->QStandardItemModel::setItem(i,6,r4);
                     j++;
                 }
                 int tbuy=0;
@@ -676,8 +677,8 @@ void MainWindow::getnewtrack(Data newdata)
                 {
                     QStandardItem *r5 = new QStandardItem(QString::number(new06.rnum[j]));
                     QStandardItem *r6 = new QStandardItem(QString::number(new06.rprice[j],'d',4));
-                    rmodel->QStandardItemModel::setItem(i,5,r5);
-                    rmodel->QStandardItemModel::setItem(i,6,r6);
+                    rmodel->QStandardItemModel::setItem(i,7,r5);
+                    rmodel->QStandardItemModel::setItem(i,8,r6);
                     j+=tbuy;
                 }
                 int tsell=0;
@@ -688,8 +689,8 @@ void MainWindow::getnewtrack(Data newdata)
                 {
                     QStandardItem *r7 = new QStandardItem(QString::number(new06.rnum[j]));
                     QStandardItem *r8 = new QStandardItem(QString::number(new06.rprice[j],'d',4));
-                    rmodel->QStandardItemModel::setItem(i,7,r7);
-                    rmodel->QStandardItemModel::setItem(i,8,r8);
+                    rmodel->QStandardItemModel::setItem(i,9,r7);
+                    rmodel->QStandardItemModel::setItem(i,10,r8);
                     j+=tbuy;
                 }
                 break;

@@ -39,7 +39,8 @@ SOURCES += \
     format06.cpp \
     link.cpp \
     udpconnect.cpp \
-    SimulatorTradeProtos.pb.cc
+    SimulatorTradeProtos.pb.cc \
+    timer.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -55,7 +56,8 @@ HEADERS += \
     format06.h \
     link.h \
     udpconnect.h \
-    SimulatorTradeProtos.pb.h
+    SimulatorTradeProtos.pb.h \
+    timer.h
 
 FORMS += \
         mainwindow.ui

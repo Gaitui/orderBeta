@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1481</width>
+    <width>1491</width>
     <height>905</height>
    </rect>
   </property>
@@ -386,8 +386,6 @@
     </item>
    </layout>
    <zorder></zorder>
-   <zorder>horizontalSpacer</zorder>
-   <zorder>addTrack</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

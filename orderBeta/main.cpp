@@ -10,6 +10,8 @@
 #include <QHostAddress>
 #include "udpconnect.h"
 #include "data.h"
+#include "format06.h"
+#include "timer.h"
 
 
 bool havelogin = false;
@@ -26,11 +28,12 @@ int main(int argc, char *argv[])
     fclose(fout);
     QApplication a(argc, argv);
     MainWindow w;
+    Timer t(&w);
     outlog ol;
     udpthread mtse(&w,QHostAddress("226.0.100.100"),10000);
-    //udpconnect(&w,QHostAddress("226.0.100.100"),10000);
-    linkthread lt(&w,&ol);
+    linkthread lt(&w,&ol,&t);
 
+    t.start();
     ol.start();
     mtse.start();
     lt.start();
