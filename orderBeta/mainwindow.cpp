@@ -213,14 +213,14 @@ void MainWindow::on_sendNew_clicked()
     double newprice = ui->newenprice->text().toDouble();
     //qDebug()<<"New Price : "<<newprice;
     order.set_price(newprice);
-    //qDebug()<<"Set Price"<<order.price();
+    qDebug()<<"Set Price"<<order.price();
     //6
     if(ui->newortype->currentIndex()==0)
         order.set_ordertype(tutorial::OrderTypeEnum::otMarket);
     else
         order.set_ordertype(tutorial::OrderTypeEnum::otLimit);
     //7
-    //order.set_tseordertype("");
+    order.set_tseordertype("");
     //8
     if(ui->newrequest->currentIndex()==0)
         order.set_timeinforce(tutorial::TimeInForceEnum::tifROD);
@@ -229,30 +229,34 @@ void MainWindow::on_sendNew_clicked()
     else
         order.set_timeinforce(tutorial::TimeInForceEnum::tifFOK);
     //9
-    order.set_nid(129);
+    order.set_nid(55);
     //10
     if(ui->newmarket->currentIndex()==0)
     {
+        qDebug()<<"set Market = mtse";
         order.set_market(tutorial::MarketEnum::mTSE);
     }
     else if(ui->newmarket->currentIndex()==1)
     {
+        qDebug()<<"set Market = mtse_ODD";
         order.set_market(tutorial::MarketEnum::mTSE_ODD);
     }
     else if(ui->newmarket->currentIndex()==2)
     {
+        qDebug()<<"set Market = mOTC";
         order.set_market(tutorial::MarketEnum::mOTC);
     }
     else if(ui->newmarket->currentIndex()==3)
     {
-            order.set_market(tutorial::MarketEnum::mOTC_ODD);
+        qDebug()<<"set Market = mOTC_ODD";
+        order.set_market(tutorial::MarketEnum::mOTC_ODD);
     }
-    //order.set_market(tutorial::MarketEnum::mFutures);
     //11
     order.set_orderid("0");
     //12
     order.set_kind(tutorial::KindEnum::kNew);
 
+    qDebug()<<"market set : "<<order.market();
     emit senddata(order);
 }
 
@@ -678,7 +682,7 @@ void MainWindow::getnewtrack(Data newdata)
                 }
                 int tsell=0;
                 for(int k=4;k<7;k++)
-                    tsell=tsell<<2+new06.reveal[k];
+                    tsell=(tsell<<1)+new06.reveal[k];
                 qDebug()<<tsell;
                 if(tsell!=0)
                 {

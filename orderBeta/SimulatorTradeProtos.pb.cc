@@ -78,7 +78,6 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_SimulatorTradeProtos_2eproto::
   PROTOBUF_FIELD_OFFSET(::tutorial::SimulatorTradeReply, text_),
   PROTOBUF_FIELD_OFFSET(::tutorial::SimulatorTradeReply, reportseq_),
   PROTOBUF_FIELD_OFFSET(::tutorial::SimulatorTradeReply, market_),
-  PROTOBUF_FIELD_OFFSET(::tutorial::SimulatorTradeReply, execid_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::tutorial::SimulatorTradeOrder, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -99,7 +98,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_SimulatorTradeProtos_2eproto::
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::tutorial::SimulatorTradeReply)},
-  { 22, -1, sizeof(::tutorial::SimulatorTradeOrder)},
+  { 21, -1, sizeof(::tutorial::SimulatorTradeOrder)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -108,7 +107,7 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 };
 
 const char descriptor_table_protodef_SimulatorTradeProtos_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\032SimulatorTradeProtos.proto\022\010tutorial\"\274"
+  "\n\032SimulatorTradeProtos.proto\022\010tutorial\"\254"
   "\003\n\023SimulatorTradeReply\022\024\n\014TransactTime\030\001"
   " \001(\t\022 \n\004Side\030\002 \001(\0162\022.tutorial.SideEnum\022\016"
   "\n\006Symbol\030\003 \001(\t\022\020\n\010OrderQty\030\004 \001(\005\022\r\n\005Pric"
@@ -119,35 +118,35 @@ const char descriptor_table_protodef_SimulatorTradeProtos_2eproto[] PROTOBUF_SEC
   "sQty\030\013 \001(\005\022.\n\013OrderStatus\030\014 \001(\0162\031.tutori"
   "al.OrderStatusEnum\022\022\n\nStatusCode\030\r \001(\t\022\014"
   "\n\004Text\030\016 \001(\t\022\021\n\tReportSeq\030\017 \001(\005\022$\n\006Marke"
-  "t\030\020 \001(\0162\024.tutorial.MarketEnum\022\016\n\006ExecID\030"
-  "\021 \001(\t\"\326\002\n\023SimulatorTradeOrder\022\024\n\014Transac"
-  "tTime\030\001 \001(\t\022 \n\004Side\030\002 \001(\0162\022.tutorial.Sid"
-  "eEnum\022\016\n\006Symbol\030\003 \001(\t\022\020\n\010OrderQty\030\004 \001(\005\022"
-  "\r\n\005Price\030\005 \001(\001\022*\n\tOrderType\030\006 \001(\0162\027.tuto"
-  "rial.OrderTypeEnum\022\024\n\014TSEOrderType\030\007 \001(\t"
-  "\022.\n\013TimeInForce\030\010 \001(\0162\031.tutorial.TimeInF"
-  "orceEnum\022\013\n\003NID\030\t \001(\003\022$\n\006Market\030\n \001(\0162\024."
-  "tutorial.MarketEnum\022\017\n\007OrderID\030\013 \001(\t\022 \n\004"
-  "Kind\030\014 \001(\0162\022.tutorial.KindEnum*/\n\010KindEn"
-  "um\022\010\n\004kNew\020\000\022\013\n\007kCancel\020\001\022\014\n\010kReplace\020\002*"
-  "*\n\010SideEnum\022\t\n\005sNone\020\000\022\010\n\004sBuy\020\001\022\t\n\005sSel"
-  "l\020\002*o\n\rOrderTypeEnum\022\n\n\006otNone\020\000\022\014\n\010otMa"
-  "rket\020\001\022\013\n\007otLimit\020\002\022\032\n\026otMarketWithProte"
-  "ction\020\003\022\n\n\006otStop\020\004\022\017\n\013otStopLimit\020\005*\366\001\n"
-  "\017OrderStatusEnum\022\n\n\006osNone\020\000\022\020\n\014osPendin"
-  "gNew\020\001\022\t\n\005osNew\020\002\022\024\n\020osPendingReplace\020\003\022"
-  "\016\n\nosReplaced\020\004\022\023\n\017osPendingCancel\020\005\022\016\n\n"
-  "osCanceled\020\006\022\025\n\021osPartiallyFilled\020\007\022\014\n\010o"
-  "sFilled\020\010\022\021\n\rosQuoteAccept\020\t\022\r\n\tosExpire"
-  "d\020\n\022\016\n\nosRejected\020\013\022\030\n\024osQuoteRequestAcc"
-  "ept\020\014*O\n\017TimeInForceEnum\022\013\n\007tifNone\020\000\022\n\n"
-  "\006tifROD\020\001\022\n\n\006tifIOC\020\002\022\n\n\006tifFOK\020\003\022\013\n\007tif"
-  "TFXQ\020\010*\311\001\n\nMarketEnum\022\t\n\005mNone\020\000\022\014\n\010mFut"
-  "ures\020\001\022\014\n\010mOptions\020\002\022\010\n\004mTSE\020\003\022\010\n\004mOTC\020\004"
-  "\022\023\n\017mForeignFutures\020\005\022\023\n\017mForeignOptions"
-  "\020\006\022\021\n\rmForeignStock\020\007\022\016\n\nmCNFutures\020\010\022\016\n"
-  "\nmCNOptions\020\t\022\007\n\003mES\020\n\022\014\n\010mTSE_ODD\020\013\022\014\n\010"
-  "mOTC_ODD\020\014B\021\252\002\016SimulatorTradeb\006proto3"
+  "t\030\020 \001(\0162\024.tutorial.MarketEnum\"\326\002\n\023Simula"
+  "torTradeOrder\022\024\n\014TransactTime\030\001 \001(\t\022 \n\004S"
+  "ide\030\002 \001(\0162\022.tutorial.SideEnum\022\016\n\006Symbol\030"
+  "\003 \001(\t\022\020\n\010OrderQty\030\004 \001(\005\022\r\n\005Price\030\005 \001(\001\022*"
+  "\n\tOrderType\030\006 \001(\0162\027.tutorial.OrderTypeEn"
+  "um\022\024\n\014TSEOrderType\030\007 \001(\t\022.\n\013TimeInForce\030"
+  "\010 \001(\0162\031.tutorial.TimeInForceEnum\022\013\n\003NID\030"
+  "\t \001(\003\022$\n\006Market\030\n \001(\0162\024.tutorial.MarketE"
+  "num\022\017\n\007OrderID\030\013 \001(\t\022 \n\004Kind\030\014 \001(\0162\022.tut"
+  "orial.KindEnum*/\n\010KindEnum\022\010\n\004kNew\020\000\022\013\n\007"
+  "kCancel\020\001\022\014\n\010kReplace\020\002**\n\010SideEnum\022\t\n\005s"
+  "None\020\000\022\010\n\004sBuy\020\001\022\t\n\005sSell\020\002*o\n\rOrderType"
+  "Enum\022\n\n\006otNone\020\000\022\014\n\010otMarket\020\001\022\013\n\007otLimi"
+  "t\020\002\022\032\n\026otMarketWithProtection\020\003\022\n\n\006otSto"
+  "p\020\004\022\017\n\013otStopLimit\020\005*\366\001\n\017OrderStatusEnum"
+  "\022\n\n\006osNone\020\000\022\020\n\014osPendingNew\020\001\022\t\n\005osNew\020"
+  "\002\022\024\n\020osPendingReplace\020\003\022\016\n\nosReplaced\020\004\022"
+  "\023\n\017osPendingCancel\020\005\022\016\n\nosCanceled\020\006\022\025\n\021"
+  "osPartiallyFilled\020\007\022\014\n\010osFilled\020\010\022\021\n\rosQ"
+  "uoteAccept\020\t\022\r\n\tosExpired\020\n\022\016\n\nosRejecte"
+  "d\020\013\022\030\n\024osQuoteRequestAccept\020\014*O\n\017TimeInF"
+  "orceEnum\022\013\n\007tifNone\020\000\022\n\n\006tifROD\020\001\022\n\n\006tif"
+  "IOC\020\002\022\n\n\006tifFOK\020\003\022\013\n\007tifTFXQ\020\010*\276\001\n\nMarke"
+  "tEnum\022\014\n\010mFutures\020\000\022\014\n\010mOptions\020\001\022\010\n\004mTS"
+  "E\020\002\022\010\n\004mOTC\020\003\022\023\n\017mForeignFutures\020\004\022\023\n\017mF"
+  "oreignOptions\020\005\022\021\n\rmForeignStock\020\006\022\016\n\nmC"
+  "NFutures\020\007\022\016\n\nmCNOptions\020\010\022\007\n\003mES\020\t\022\014\n\010m"
+  "TSE_ODD\020\n\022\014\n\010mOTC_ODD\020\013B\021\252\002\016SimulatorTra"
+  "deb\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_SimulatorTradeProtos_2eproto_deps[1] = {
 };
@@ -158,7 +157,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_Sim
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_SimulatorTradeProtos_2eproto_once;
 static bool descriptor_table_SimulatorTradeProtos_2eproto_initialized = false;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_SimulatorTradeProtos_2eproto = {
-  &descriptor_table_SimulatorTradeProtos_2eproto_initialized, descriptor_table_protodef_SimulatorTradeProtos_2eproto, "SimulatorTradeProtos.proto", 1597,
+  &descriptor_table_SimulatorTradeProtos_2eproto_initialized, descriptor_table_protodef_SimulatorTradeProtos_2eproto, "SimulatorTradeProtos.proto", 1570,
   &descriptor_table_SimulatorTradeProtos_2eproto_once, descriptor_table_SimulatorTradeProtos_2eproto_sccs, descriptor_table_SimulatorTradeProtos_2eproto_deps, 2, 0,
   schemas, file_default_instances, TableStruct_SimulatorTradeProtos_2eproto::offsets,
   file_level_metadata_SimulatorTradeProtos_2eproto, 2, file_level_enum_descriptors_SimulatorTradeProtos_2eproto, file_level_service_descriptors_SimulatorTradeProtos_2eproto,
@@ -275,7 +274,6 @@ bool MarketEnum_IsValid(int value) {
     case 9:
     case 10:
     case 11:
-    case 12:
       return true;
     default:
       return false;
@@ -324,10 +322,6 @@ SimulatorTradeReply::SimulatorTradeReply(const SimulatorTradeReply& from)
   if (!from._internal_text().empty()) {
     text_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.text_);
   }
-  execid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_execid().empty()) {
-    execid_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.execid_);
-  }
   ::memcpy(&side_, &from.side_,
     static_cast<size_t>(reinterpret_cast<char*>(&market_) -
     reinterpret_cast<char*>(&side_)) + sizeof(market_));
@@ -342,7 +336,6 @@ void SimulatorTradeReply::SharedCtor() {
   orderid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   statuscode_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   text_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  execid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   ::memset(&side_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&market_) -
       reinterpret_cast<char*>(&side_)) + sizeof(market_));
@@ -360,7 +353,6 @@ void SimulatorTradeReply::SharedDtor() {
   orderid_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   statuscode_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   text_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  execid_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 void SimulatorTradeReply::SetCachedSize(int size) const {
@@ -384,7 +376,6 @@ void SimulatorTradeReply::Clear() {
   orderid_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   statuscode_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   text_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  execid_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   ::memset(&side_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&market_) -
       reinterpret_cast<char*>(&side_)) + sizeof(market_));
@@ -525,15 +516,6 @@ const char* SimulatorTradeReply::_InternalParse(const char* ptr, ::PROTOBUF_NAME
           ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
           _internal_set_market(static_cast<::tutorial::MarketEnum>(val));
-        } else goto handle_unusual;
-        continue;
-      // string ExecID = 17;
-      case 17:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 138)) {
-          auto str = _internal_mutable_execid();
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "tutorial.SimulatorTradeReply.ExecID"));
-          CHK_(ptr);
         } else goto handle_unusual;
         continue;
       default: {
@@ -687,16 +669,6 @@ failure:
       16, this->_internal_market(), target);
   }
 
-  // string ExecID = 17;
-  if (this->execid().size() > 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_execid().data(), static_cast<int>(this->_internal_execid().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "tutorial.SimulatorTradeReply.ExecID");
-    target = stream->WriteStringMaybeAliased(
-        17, this->_internal_execid(), target);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target, stream);
@@ -753,13 +725,6 @@ size_t SimulatorTradeReply::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_text());
-  }
-
-  // string ExecID = 17;
-  if (this->execid().size() > 0) {
-    total_size += 2 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_execid());
   }
 
   // .tutorial.SideEnum Side = 2;
@@ -880,10 +845,6 @@ void SimulatorTradeReply::MergeFrom(const SimulatorTradeReply& from) {
 
     text_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.text_);
   }
-  if (from.execid().size() > 0) {
-
-    execid_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.execid_);
-  }
   if (from.side() != 0) {
     _internal_set_side(from._internal_side());
   }
@@ -948,8 +909,6 @@ void SimulatorTradeReply::InternalSwap(SimulatorTradeReply* other) {
   statuscode_.Swap(&other->statuscode_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   text_.Swap(&other->text_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  execid_.Swap(&other->execid_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(side_, other->side_);
   swap(orderqty_, other->orderqty_);

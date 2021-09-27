@@ -10,6 +10,7 @@
 #include <QHostAddress>
 #include <fstream>
 #include <sys/time.h>
+#include <ostream>
 //#include "link.h"
 
 /*class linkthread : public QThread

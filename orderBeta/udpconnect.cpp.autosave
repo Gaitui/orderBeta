@@ -38,11 +38,10 @@ void udpconnect::readReady()
                     {
                         if(dhead.mcode==6 || dhead.mcode==23)
                         {
-                            qDebug()<<"AA";
                             qDebug()<<"Message :: "<<datagram.toHex();
                             Data newdata;
                             newdata.dhead = dhead;
-                            for(int i=11;i<dhead.mlen;i++)
+                            for(int i=10;i<dhead.mlen;i++)
                             {
                                 newdata.pkt_data+=pkt_data[h+i];
                             }

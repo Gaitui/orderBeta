@@ -15,7 +15,7 @@ void udpthread :: run()
 {
     udpconnect newudp(groupAddress,port);
     connect(w,SIGNAL(udpEnd()),&newudp,SLOT(receiveEnd()));
-    connect(&newudp,SIGNAL(sendend()),this,SLOT(receiveEnd()));
+    //connect(&newudp,SIGNAL(sendend()),this,SLOT(receiveEnd()));
     connect(&newudp,SIGNAL(sendnewtrack(Data)),w,SLOT(getnewtrack(Data)));
     newudp.moveToThread(this);
     this->start();

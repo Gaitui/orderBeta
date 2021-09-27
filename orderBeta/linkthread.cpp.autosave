@@ -111,7 +111,7 @@ void linkthread::datatohost(tutorial::SimulatorTradeOrder order)
     qDebug()<<"k = "<<k.toHex();
     //std::string str = order.SerializeAsString();
     //qDebug()<<"Origin str : "<<QString::fromStdString(str);
-    int ssize = order.ByteSize();
+    int ssize = str.order.ByteSize();
     QByteArray w;
     w.append(0x7e);
     for(int i=0;i<4;i++)
