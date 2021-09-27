@@ -97,7 +97,8 @@ void linkthread::writetohost(QString str)
     }
     w+=str.toUtf8();
     socket->write(w);
-    socket->flush();
+    //socket->flush();
+    socket->waitForBytesWritten();
 }
 
 void linkthread::datatohost(tutorial::SimulatorTradeOrder order)
@@ -113,9 +114,10 @@ void linkthread::datatohost(tutorial::SimulatorTradeOrder order)
     }
     for(int i=0;i<str.size();i++)
         w.append(str[i]);
+    qDebug()<<"w = "<<w.toHex();
     socket->write(w);
-    //socket->waitForBytesWritten();
-    socket->flush();
+    //socket->flush();
+    socket->waitForBytesWritten();
 }
 void linkthread::readyRead()
 {

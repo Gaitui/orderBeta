@@ -591,9 +591,9 @@ void MainWindow::getaddtrack()
             if(newtrack.addmarket.currentIndex()==0)
                 r2= new QStandardItem("mTSE");
             else if(newtrack.addmarket.currentIndex()==1)
-                r2 = new QStandardItem("mOTC");
-            else if(newtrack.addmarket.currentIndex()==2)
                 r2 = new QStandardItem("mTSE_ODD");
+            else if(newtrack.addmarket.currentIndex()==2)
+                r2 = new QStandardItem("mOTC");
             else if(newtrack.addmarket.currentIndex()==3)
                 r2 = new QStandardItem("mOTC_ODD");
 
@@ -677,7 +677,7 @@ void MainWindow::getnewtrack(Data newdata)
                     j+=tbuy;
                 }
                 int tsell=0;
-                for(int k=5;k<8;k++)
+                for(int k=4;k<7;k++)
                     tsell=tsell<<2+new06.reveal[k];
                 qDebug()<<tsell;
                 if(tsell!=0)

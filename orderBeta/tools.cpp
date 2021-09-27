@@ -55,6 +55,17 @@ void tools::tointArray(int &h,int n,int *dest,std::string pkt_data)
     return;
 }
 
+void tools::BCDtoArray(int &h,int n,int *dest,std::string pkt_data)
+{
+    for(int i=0;i<n;i++)
+    {
+        dest[i]=(pkt_data[h+i]>>4)*10+(pkt_data[h+i] & 0x0f);
+    }
+    h+=n;
+    return;
+}
+
+
 void tools::tobin(int &h,int *dest,std::string pkt_data)
 {
     for(int i=7;i>=0;i--)

@@ -8,8 +8,7 @@ void format06::decode06(std::string pkt_data, head inhead)
     int h=0;
     int len = inhead.mlen-10;
     t.toArray(h,6,scode,pkt_data);
-    //mtime = t.BCDtoD(h,6,pkt_data);
-    t.tointArray(h,6,mtime,pkt_data);
+    t.BCDtoArray(h,6,mtime,pkt_data);
     t.tobin(h,reveal,pkt_data);
     t.tobin(h,limark,pkt_data);
     t.tobin(h,state,pkt_data);

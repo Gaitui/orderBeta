@@ -215,23 +215,24 @@ inline bool TimeInForceEnum_Parse(
     TimeInForceEnum_descriptor(), name, value);
 }
 enum MarketEnum : int {
-  mFutures = 0,
-  mOptions = 1,
-  mTSE = 2,
-  mOTC = 3,
-  mForeignFutures = 4,
-  mForeignOptions = 5,
-  mForeignStock = 6,
-  mCNFutures = 7,
-  mCNOptions = 8,
-  mES = 9,
-  mTSE_ODD = 10,
-  mOTC_ODD = 11,
+  mNone = 0,
+  mFutures = 1,
+  mOptions = 2,
+  mTSE = 3,
+  mOTC = 4,
+  mForeignFutures = 5,
+  mForeignOptions = 6,
+  mForeignStock = 7,
+  mCNFutures = 8,
+  mCNOptions = 9,
+  mES = 10,
+  mTSE_ODD = 11,
+  mOTC_ODD = 12,
   MarketEnum_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   MarketEnum_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool MarketEnum_IsValid(int value);
-constexpr MarketEnum MarketEnum_MIN = mFutures;
+constexpr MarketEnum MarketEnum_MIN = mNone;
 constexpr MarketEnum MarketEnum_MAX = mOTC_ODD;
 constexpr int MarketEnum_ARRAYSIZE = MarketEnum_MAX + 1;
 
@@ -363,6 +364,7 @@ class SimulatorTradeReply :
     kOrderIDFieldNumber = 9,
     kStatusCodeFieldNumber = 13,
     kTextFieldNumber = 14,
+    kExecIDFieldNumber = 17,
     kSideFieldNumber = 2,
     kOrderQtyFieldNumber = 4,
     kPriceFieldNumber = 5,
@@ -470,6 +472,22 @@ class SimulatorTradeReply :
   std::string* _internal_mutable_text();
   public:
 
+  // string ExecID = 17;
+  void clear_execid();
+  const std::string& execid() const;
+  void set_execid(const std::string& value);
+  void set_execid(std::string&& value);
+  void set_execid(const char* value);
+  void set_execid(const char* value, size_t size);
+  std::string* mutable_execid();
+  std::string* release_execid();
+  void set_allocated_execid(std::string* execid);
+  private:
+  const std::string& _internal_execid() const;
+  void _internal_set_execid(const std::string& value);
+  std::string* _internal_mutable_execid();
+  public:
+
   // .tutorial.SideEnum Side = 2;
   void clear_side();
   ::tutorial::SideEnum side() const;
@@ -571,6 +589,7 @@ class SimulatorTradeReply :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr orderid_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr statuscode_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr text_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr execid_;
   int side_;
   ::PROTOBUF_NAMESPACE_ID::int32 orderqty_;
   double price_;
@@ -1430,6 +1449,66 @@ inline void SimulatorTradeReply::_internal_set_market(::tutorial::MarketEnum val
 inline void SimulatorTradeReply::set_market(::tutorial::MarketEnum value) {
   _internal_set_market(value);
   // @@protoc_insertion_point(field_set:tutorial.SimulatorTradeReply.Market)
+}
+
+// string ExecID = 17;
+inline void SimulatorTradeReply::clear_execid() {
+  execid_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline const std::string& SimulatorTradeReply::execid() const {
+  // @@protoc_insertion_point(field_get:tutorial.SimulatorTradeReply.ExecID)
+  return _internal_execid();
+}
+inline void SimulatorTradeReply::set_execid(const std::string& value) {
+  _internal_set_execid(value);
+  // @@protoc_insertion_point(field_set:tutorial.SimulatorTradeReply.ExecID)
+}
+inline std::string* SimulatorTradeReply::mutable_execid() {
+  // @@protoc_insertion_point(field_mutable:tutorial.SimulatorTradeReply.ExecID)
+  return _internal_mutable_execid();
+}
+inline const std::string& SimulatorTradeReply::_internal_execid() const {
+  return execid_.GetNoArena();
+}
+inline void SimulatorTradeReply::_internal_set_execid(const std::string& value) {
+  
+  execid_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
+}
+inline void SimulatorTradeReply::set_execid(std::string&& value) {
+  
+  execid_.SetNoArena(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:tutorial.SimulatorTradeReply.ExecID)
+}
+inline void SimulatorTradeReply::set_execid(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  execid_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tutorial.SimulatorTradeReply.ExecID)
+}
+inline void SimulatorTradeReply::set_execid(const char* value, size_t size) {
+  
+  execid_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tutorial.SimulatorTradeReply.ExecID)
+}
+inline std::string* SimulatorTradeReply::_internal_mutable_execid() {
+  
+  return execid_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline std::string* SimulatorTradeReply::release_execid() {
+  // @@protoc_insertion_point(field_release:tutorial.SimulatorTradeReply.ExecID)
+  
+  return execid_.ReleaseNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline void SimulatorTradeReply::set_allocated_execid(std::string* execid) {
+  if (execid != nullptr) {
+    
+  } else {
+    
+  }
+  execid_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), execid);
+  // @@protoc_insertion_point(field_set_allocated:tutorial.SimulatorTradeReply.ExecID)
 }
 
 // -------------------------------------------------------------------

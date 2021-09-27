@@ -30,7 +30,6 @@ SOURCES += \
     showui.cpp \
     showthread.cpp \
     linkthread.cpp \
-    SimulatorTradeProtos.pb.cc \
     outlog.cpp \
     udpthread.cpp \
     head.cpp \
@@ -38,14 +37,15 @@ SOURCES += \
     data.cpp \
     addtrackdialog.cpp \
     format06.cpp \
-    link.cpp
+    link.cpp \
+    udpconnect.cpp \
+    SimulatorTradeProtos.pb.cc
 
 HEADERS += \
         mainwindow.h \
     showui.h \
     showthread.h \
     linkthread.h \
-    SimulatorTradeProtos.pb.h \
     outlog.h \
     udpthread.h \
     head.h \
@@ -53,7 +53,9 @@ HEADERS += \
     data.h \
     addtrackdialog.h \
     format06.h \
-    link.h
+    link.h \
+    udpconnect.h \
+    SimulatorTradeProtos.pb.h
 
 FORMS += \
         mainwindow.ui

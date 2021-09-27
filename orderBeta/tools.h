@@ -12,6 +12,7 @@ public:
     double todouble(int &h,int n,int inum,std::string pkt_data);
     int toint(int &h,std::string pkt_data);
     void tointArray(int &h,int n,int *dest,std::string pkt_data);
+    void BCDtoArray(int &h,int n,int *dest,std::string pkt_data);
     void tobin(int &h,int *dest,std::string pkt_data);
 };
 
