@@ -322,9 +322,10 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
         QStandardItem *i0 = new QStandardItem(QString::fromStdString(reply.transacttime()));
         QStandardItem *i1 = new QStandardItem(QString::fromStdString(reply.orderid()));
         QStandardItem *i2 = new QStandardItem(QString::fromStdString(reply.symbol()));
-        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
-        QStandardItem *i4 = new QStandardItem(QString::number(reply.price()));
-        QStandardItem *i5 = new QStandardItem(QString::number(reply.orderqty()));
+        QStandardItem *i3 = new QStandardItem(QString::fromStdString(tutorial::MarketEnum_Name(reply.market())));
+        QStandardItem *i4 = new QStandardItem(QString::fromStdString(tutorial::SideEnum_Name(reply.side())));
+        QStandardItem *i5 = new QStandardItem(QString::number(reply.price()));
+        QStandardItem *i6 = new QStandardItem(QString::number(reply.orderqty()));
 
         model->QStandardItemModel::setItem(dnum,0,i0);
         model->QStandardItemModel::setItem(dnum,1,i1);
@@ -332,6 +333,7 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
         model->QStandardItemModel::setItem(dnum,3,i3);
         model->QStandardItemModel::setItem(dnum,4,i4);
         model->QStandardItemModel::setItem(dnum,5,i5);
+        model->QStandardItemModel::setItem(dnum,6,i6);
 
 
     }
@@ -613,6 +615,7 @@ void MainWindow::getnewtrack()
 
     }
 }
+
 void MainWindow::deltrack()
 {
     QMessageBox::StandardButton checkbtn=QMessageBox::information(NULL,"Delete track","Delete this track?",QMessageBox::Yes | QMessageBox::No);

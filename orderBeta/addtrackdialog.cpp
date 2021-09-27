@@ -26,7 +26,7 @@ addTrackDialog::addTrackDialog(QWidget *parent):QDialog(parent)
     marketlayout->addWidget(&addmarket);
 
 
-    okbtn.setText("Add");
+    okbtn.setText("新增");
     btnlayout = new QHBoxLayout;
     btnlayout->addStretch(15);
     btnlayout->addWidget(&okbtn);
