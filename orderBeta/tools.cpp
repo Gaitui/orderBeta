@@ -13,13 +13,16 @@ long long tools::BCDtoD(int &h,int n,std::string pkt_data)
     return d;
 }
 
-void tools::toArray(int &h,int n,u_char *dest,std::string pkt_data)
+void tools::toArray(int &h,int n,std::string &dest,std::string pkt_data)
 {
+    int k=0;
     for(int i=0;i<n;i++)
     {
-        dest[i]=pkt_data[h+i];
+        if(pkt_data[h+i]!=' ')
+            k++;
+        dest+=pkt_data[h+i];
     }
-    dest[n]='\0';
+    dest.resize(k);
     h+=n;
 }
 
@@ -52,13 +55,11 @@ void tools::tointArray(int &h,int n,int *dest,std::string pkt_data)
     return;
 }
 
-int tools::tobin(int &h,std::string pkt_data)
+void tools::tobin(int &h,int *dest,std::string pkt_data)
 {
-    int d=0;
     for(int i=7;i>=0;i--)
     {
-        d = d*10+((pkt_data[h]>>i) & 0x01);
+        dest[7-i]=((pkt_data[h]>>i) & 0x01);
     }
     h++;
-    return d;
 }

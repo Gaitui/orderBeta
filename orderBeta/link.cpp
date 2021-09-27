@@ -1,35 +1,12 @@
-#include "linkthread.h"
-//#include "link.h"
+#include "link.h"
 
 extern bool havelogin;
 extern std::string logindata;
 extern bool shutdown;
 
-linkthread::linkthread(MainWindow *w, outlog *lg) : QThread(),con(false)
+Link::Link():con(false)
 {
-    //connect(w,SIGNAL(sendlogin()),this,SLOT(login()));
-    connect(w,SIGNAL(sendEnd()),this,SLOT(receiveEnd()));
-    connect(w,SIGNAL(sendlink(QString)),this,SLOT(writetohost(QString)));
-    connect(w,SIGNAL(senddata(tutorial::SimulatorTradeOrder)),this,SLOT(datatohost(tutorial::SimulatorTradeOrder)));
-    connect(this,SIGNAL(sendError(QString)),w,SLOT(showError(QString)));
-    connect(this,SIGNAL(relogin()),w,SLOT(relogin()));
-    connect(this,SIGNAL(fromtcp(tutorial::SimulatorTradeReply)),w,SLOT(fromtcp(tutorial::SimulatorTradeReply)));
-    connect(this,SIGNAL(serverfail(QString)),w,SLOT(serverfail(QString)));
-    connect(this,SIGNAL(sendlog(QString)),lg,SLOT(write(QString)));
-    connect(this,SIGNAL(sendprotobuf(tutorial::SimulatorTradeReply)),lg,SLOT(writeprotobuf(tutorial::SimulatorTradeReply)));
-}
-linkthread::~linkthread()
-{
-    if(socket->state()==QTcpSocket::ConnectedState)
-        socket->disconnect();
-    socket->deleteLater();
-    qDebug()<<socket->state();
-    this->wait();
-    this->quit();
-}
-void linkthread::run()
-{
-    qDebug()<<"linkthread thread ID : "<<QThread::currentThreadId();
+    qDebug()<<"link thread ID : "<<QThread::currentThreadId();
     socket = new QTcpSocket;
     int timeout = 5000;
     time_t lsec,nsec;
@@ -64,9 +41,13 @@ void linkthread::run()
 
     login();
     connect(socket,SIGNAL(readyRead()),this,SLOT(readyRead()));
-    exec();
+    //exec();
 }
-void linkthread :: login(void)
+Link::~Link()
+{
+    socket->close();
+}
+void Link :: login(void)
 {
     std::ifstream fin;
     std::string root = "/root/program/orderBeta/orderBeta/login.ini";
@@ -85,7 +66,7 @@ void linkthread :: login(void)
 
 }
 
-void linkthread::writetohost(QString str)
+void Link::writetohost(QString str)
 {
     QByteArray w;
     int ssize = str.size();
@@ -100,7 +81,7 @@ void linkthread::writetohost(QString str)
     socket->flush();
 }
 
-void linkthread::datatohost(tutorial::SimulatorTradeOrder order)
+void Link::datatohost(tutorial::SimulatorTradeOrder order)
 {
     std::string str = order.SerializeAsString();
     int ssize = str.size();
@@ -114,10 +95,10 @@ void linkthread::datatohost(tutorial::SimulatorTradeOrder order)
     for(int i=0;i<str.size();i++)
         w.append(str[i]);
     socket->write(w);
-    //socket->waitForBytesWritten();
-    socket->flush();
+    socket->waitForBytesWritten();
+    //socket->flush();
 }
-void linkthread::readyRead()
+void Link::readyRead()
 {
     qDebug()<<"Ready read";
     QByteArray datas = socket->readAll();
@@ -143,6 +124,7 @@ void linkthread::readyRead()
                 if(dstr.compare(logindata)==0)
                 {
                     havelogin=true;
+                    qDebug()<<"login success!";
                     emit sendlog(QString::fromStdString(dstr)+" login success!");
                     emit relogin();
                 }
@@ -166,7 +148,7 @@ void linkthread::readyRead()
         }
     }
 }
-void linkthread::receiveEnd()
+void Link::receiveEnd()
 {
     exit(0);
 }

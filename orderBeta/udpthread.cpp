@@ -5,6 +5,7 @@ extern bool shutdown;
 udpthread :: udpthread(MainWindow *w,QHostAddress groupAddress,int port):groupAddress(groupAddress),port(port),QThread()
 {
     connect(w,SIGNAL(udpEnd()),this,SLOT(receiveEnd()));
+    connect(this,SIGNAL(sendnewtrack(Data)),w,SLOT(getnewtrack(Data)));
 }
 
 udpthread :: ~udpthread()
@@ -38,9 +39,9 @@ void udpthread::readyRead()
 
         datagram.resize(usocket->pendingDatagramSize());
         usocket->readDatagram(datagram.data(),datagram.size(),&sender,&senderport);
-        qDebug()<<"Message From "<<sender.toString();
-        qDebug()<<"Port From "<<senderport;
-        qDebug()<<"Message :: "<<datagram.toHex();
+        //qDebug()<<"Message From "<<sender.toString();
+        //qDebug()<<"Port From "<<senderport;
+        //qDebug()<<"Message :: "<<datagram.toHex();
         std::string pkt_data = datagram.toStdString();
         //printf("%02x\n",str[0]);
         int h=0;
@@ -53,16 +54,22 @@ void udpthread::readyRead()
                 {
                     head dhead;
                     dhead.decode(pkt_data,h);
+                    qDebug()<<"Esc : "<<dhead.esc<<" Len : "<<dhead.mlen<<" Type : "<<dhead.mtype<<" Code : "<<dhead.mcode<<" Ver : "<<dhead.mver<<" Seq : "<<dhead.mseq;
                     if(h+dhead.mlen<=len && pkt_data[h+dhead.mlen-2]==0x0d && pkt_data[h+dhead.mlen-1]==0x0a)
                     {
-                        data newdata;
-                        newdata.dhead = dhead;
-                        for(int i=0;i<dhead.mlen;i++)
+                        if(dhead.mcode==6 || dhead.mcode==23)
                         {
-                            newdata.pkt_data+=pkt_data[h+i];
+                            qDebug()<<"AA";
+                            Data newdata;
+                            newdata.dhead = dhead;
+                            for(int i=10;i<dhead.mlen;i++)
+                            {
+                                newdata.pkt_data+=pkt_data[h+i];
+                            }
+                            emit sendnewtrack(newdata);
                         }
+                        h+=dhead.mlen-1;
                     }
-                    h+=dhead.mlen-1;
                 }
             }
             h++;

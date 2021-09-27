@@ -2,12 +2,12 @@
 #define DATA_H
 #include "head.h"
 
-class data
+class Data
 {
 public:
-    data();
+    Data();
     head dhead;
-    std::string *pkt_data;
+    std::string pkt_data;
 };
 
 #endif // DATA_H

@@ -24,6 +24,7 @@ private slots:
     void receiveEnd();
 signals:
     void sendUDP(QString);
+    void sendnewtrack(Data);
 };
 
 #endif // UDPTHREAD_H

@@ -4,6 +4,7 @@ head::head(){}
 
 void head::decode(std::string pkt_data,int h)
 {
+
     esc=pkt_data[h];
     h++;
     mlen = t.BCDtoD(h,2,pkt_data);

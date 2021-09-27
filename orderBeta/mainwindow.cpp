@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     //qDebug()<<"Mainwindow thread ID : "<<QThread::currentThreadId();
 
-    connect(&newtrack.okbtn,SIGNAL(clicked()),this,SLOT(getnewtrack()));
+    connect(&newtrack.okbtn,SIGNAL(clicked()),this,SLOT(getaddtrack()));
 
     //set realtime
     QStandardItemModel *rmodel = new QStandardItemModel(0,10,this);
@@ -556,9 +556,8 @@ void MainWindow::on_addTrack_clicked()
     newtrack.exec();
 }
 
-void MainWindow::getnewtrack()
+void MainWindow::getaddtrack()
 {
-    //qDebug()<<"EE";
     if(newtrack.addscode.text().size()==0)
     {
         showError("Need Stock Code!");
@@ -632,6 +631,65 @@ void MainWindow::deltrack()
 
             connect(btn,SIGNAL(clicked()),this,SLOT(deltrack()));
             ui->realtime->setIndexWidget(rmodel->index(i,9),btn);
+        }
+    }
+}
+
+void MainWindow::getnewtrack(Data newdata)
+{
+    QStandardItemModel *rmodel = (QStandardItemModel *)ui->realtime->model();
+    if(newdata.dhead.mcode==6)
+    {
+        qDebug()<<"BB";
+        format06 new06;
+        new06.decode06(newdata.pkt_data,newdata.dhead);
+        qDebug()<<QString::fromStdString(new06.scode);
+        for(int i=0;i<rmodel->rowCount();i++)
+        {
+            if(new06.scode.compare(rmodel->index(i,1).data().toString().toStdString())==0 &&
+               ((rmodel->index(i,2).data().toString().compare("mTSE")==0 && new06.dhead.mtype==1) ||
+                (rmodel->index(i,2).data().toString().compare("mOTC")==0 && new06.dhead.mtype==2)))
+            {
+                qDebug()<<"CC";
+                QString tracktime;
+                tracktime.sprintf("%02d:%02d:%02d.%03d.%03d",new06.mtime[0],new06.mtime[1],new06.mtime[2],new06.mtime[3]*10+new06.mtime[4]/10,(new06.mtime[4]%10)*100+new06.mtime[5]);
+                QStandardItem *r0 = new QStandardItem(tracktime);
+                rmodel->QStandardItemModel::setItem(i,0,r0);
+                int j=0;
+                if(new06.reveal[0]==1)
+                {
+                    QStandardItem *r3 = new QStandardItem(QString::number(new06.rnum[j]));
+                    QStandardItem *r4 = new QStandardItem(QString::number(new06.rprice[j],'d',4));
+                    rmodel->QStandardItemModel::setItem(i,3,r3);
+                    rmodel->QStandardItemModel::setItem(i,4,r4);
+                    j++;
+                }
+                int tbuy=0;
+                for(int k=1;k<4;k++)
+                    tbuy=(tbuy<<1)+new06.reveal[k];
+                qDebug()<<tbuy;
+                if(tbuy!=0)
+                {
+                    QStandardItem *r5 = new QStandardItem(QString::number(new06.rnum[j]));
+                    QStandardItem *r6 = new QStandardItem(QString::number(new06.rprice[j],'d',4));
+                    rmodel->QStandardItemModel::setItem(i,5,r5);
+                    rmodel->QStandardItemModel::setItem(i,6,r6);
+                    j+=tbuy;
+                }
+                int tsell=0;
+                for(int k=5;k<8;k++)
+                    tsell=tsell<<2+new06.reveal[k];
+                qDebug()<<tsell;
+                if(tsell!=0)
+                {
+                    QStandardItem *r7 = new QStandardItem(QString::number(new06.rnum[j]));
+                    QStandardItem *r8 = new QStandardItem(QString::number(new06.rprice[j],'d',4));
+                    rmodel->QStandardItemModel::setItem(i,7,r7);
+                    rmodel->QStandardItemModel::setItem(i,8,r8);
+                    j+=tbuy;
+                }
+                break;
+            }
         }
     }
 }

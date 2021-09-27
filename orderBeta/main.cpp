@@ -23,11 +23,11 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     outlog ol;
-    udpthread mtse(&w,QHostAddress("226.0.100.100"),10000);
+    //udpthread mtse(&w,QHostAddress("226.0.100.100"),10000);
     linkthread lt(&w,&ol);
 
     ol.start();
-    mtse.start();
+    //mtse.start();
     lt.start();
     w.show();
     return a.exec();

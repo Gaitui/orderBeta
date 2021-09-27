@@ -1,5 +1,6 @@
-#ifndef LINKTHREAD_H
-#define LINKTHREAD_H
+#ifndef LINK_H
+#define LINK_H
+
 #include <QThread>
 #include <QTcpSocket>
 #include "mainwindow.h"
@@ -10,28 +11,13 @@
 #include <QHostAddress>
 #include <fstream>
 #include <sys/time.h>
-//#include "link.h"
 
-/*class linkthread : public QThread
+class Link : public QTcpSocket
 {
     Q_OBJECT
 public:
-    explicit linkthread(MainWindow*,outlog*);
-    ~linkthread();
-protected:
-    void run();
-private slots:
-    void receiveEnd();
-};*/
-
-
-
-class linkthread : public QThread
-{
-    Q_OBJECT
-public:
-    explicit linkthread(MainWindow*,outlog*);
-    ~linkthread();
+    explicit Link();
+    ~Link();
     QTcpSocket *socket;
     bool con;
 protected:
@@ -43,7 +29,7 @@ private slots:
     void readyRead();
     void receiveEnd();
 public slots:
-    //void linktoserver();
+
 signals:
     void sendError(QString str);
     void relogin();
@@ -53,4 +39,4 @@ signals:
     void sendprotobuf(tutorial::SimulatorTradeReply);
 };
 
-#endif // LINKTHREAD_H
+#endif // LINK_H

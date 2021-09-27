@@ -13,8 +13,6 @@ addTrackDialog::addTrackDialog(QWidget *parent):QDialog(parent)
     scodelayout->setStretchFactor(&scodelabel,100);
     scodelayout->setStretchFactor(&addscode,99);
 
-
-
     marketlabel.setText("市場");
 
     addmarket.addItem("上市/整股",0);
@@ -37,7 +35,6 @@ addTrackDialog::addTrackDialog(QWidget *parent):QDialog(parent)
     addlayout->addItem(marketlayout,1,0);
     addlayout->addItem(new QSpacerItem(20,20),2,0);
     addlayout->addItem(btnlayout,3,0);
-
 
     setLayout(addlayout);
 

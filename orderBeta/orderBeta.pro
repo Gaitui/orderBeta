@@ -36,7 +36,9 @@ SOURCES += \
     head.cpp \
     tools.cpp \
     data.cpp \
-    addtrackdialog.cpp
+    addtrackdialog.cpp \
+    format06.cpp \
+    link.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,7 +51,9 @@ HEADERS += \
     head.h \
     tools.h \
     data.h \
-    addtrackdialog.h
+    addtrackdialog.h \
+    format06.h \
+    link.h
 
 FORMS += \
         mainwindow.ui
