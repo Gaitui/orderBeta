@@ -21,6 +21,7 @@
 #include "format06.h"
 #include "tseformat01.h"
 #include "otcformat01.h"
+#include "format23.h"
 
 namespace Ui {
 class MainWindow;

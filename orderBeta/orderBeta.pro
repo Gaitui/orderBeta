@@ -42,7 +42,8 @@ SOURCES += \
     SimulatorTradeProtos.pb.cc \
     timer.cpp \
     tseformat01.cpp \
-    otcformat01.cpp
+    otcformat01.cpp \
+    format23.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -61,7 +62,8 @@ HEADERS += \
     SimulatorTradeProtos.pb.h \
     timer.h \
     tseformat01.h \
-    otcformat01.h
+    otcformat01.h \
+    format23.h
 
 FORMS += \
         mainwindow.ui
