@@ -7,7 +7,12 @@ udpconnect::udpconnect(QHostAddress groupAddress,int port):groupAddress(groupAdd
     joinMulticastGroup(groupAddress);
     connect(this,SIGNAL(readyRead()),this,SLOT(readReady()));
 }
-
+udpconnect::~udpconnect()
+{
+    if(this->state()==QUdpSocket::ConnectedState)
+        disconnect();
+    close();
+}
 void udpconnect::readReady()
 {
     QHostAddress sender;
@@ -58,9 +63,4 @@ void udpconnect::readReady()
         }
     }
 }
-void udpconnect::receiveEnd()
-{
-    disconnect();
-    this->deleteLater();
-    exit(0);
-}
+

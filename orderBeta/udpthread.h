@@ -21,7 +21,7 @@ public:
 protected:
     void run();
 private slots:
-    //void receiveEnd();
+    void receiveEnd();
 signals:
 };
 

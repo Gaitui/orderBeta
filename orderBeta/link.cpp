@@ -45,7 +45,7 @@ Link::Link():con(false)
 }
 Link::~Link()
 {
-    socket->close();
+    socket->disconnect();
 }
 void Link :: login(void)
 {

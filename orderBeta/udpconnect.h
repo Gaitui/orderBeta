@@ -13,11 +13,12 @@ class udpconnect : public QUdpSocket
 public:
     //udpconnect(MainWindow*,QHostAddress,int);
     udpconnect(QHostAddress,int);
+    ~udpconnect();
     QHostAddress groupAddress;
     int port;
 private slots:
     void readReady();
-    void receiveEnd();
+    //void receiveEnd();
 signals:
     void sendUDP(QString);
     void sendnewtrack(Data);
