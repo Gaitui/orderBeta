@@ -306,6 +306,91 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
 
         connect(bd,SIGNAL(clicked()),this,SLOT(delbuttonclick()));
     }
+    else if(reply.orderstatus()==6)
+    {
+        //modify nowentrust
+        QStandardItemModel *nmodel = (QStandardItemModel *)ui->nowentrust->model();
+        int rownum;
+        for(rownum=0;rownum<nmodel->rowCount();)
+        {
+            if(reply.orderid().compare(nmodel->index(rownum,1).data().toString().toStdString())==0)
+            {
+                //add deal num into passentrust (if have)
+                if(nmodel->index(rownum,9).data().toInt()!=0)
+                {
+                    QStandardItemModel *qmodel = (QStandardItemModel *)ui->passentrust->model();
+                    int qnum = qmodel->rowCount();
+                    QStandardItem *q0 = new QStandardItem(nmodel->index(rownum,0).data().toString());
+                    QStandardItem *q1 = new QStandardItem(nmodel->index(rownum,1).data().toString());
+                    QStandardItem *q2 = new QStandardItem(nmodel->index(rownum,2).data().toString());
+                    QStandardItem *q3 = new QStandardItem(nmodel->index(rownum,3).data().toString());
+                    QStandardItem *q4 = new QStandardItem(nmodel->index(rownum,4).data().toString());
+                    QStandardItem *q5 = new QStandardItem(nmodel->index(rownum,5).data().toString());
+                    QStandardItem *q6 = new QStandardItem(nmodel->index(rownum,6).data().toString());
+                    QStandardItem *q7 = new QStandardItem(nmodel->index(rownum,9).data().toString());
+                    QStandardItem *q8 = new QStandardItem(QString::fromStdString("osPartiallyFilled"));
+
+                    qmodel->QStandardItemModel::setItem(qnum,0,q0);
+                    qmodel->QStandardItemModel::setItem(qnum,1,q1);
+                    qmodel->QStandardItemModel::setItem(qnum,2,q2);
+                    qmodel->QStandardItemModel::setItem(qnum,3,q3);
+                    qmodel->QStandardItemModel::setItem(qnum,4,q4);
+                    qmodel->QStandardItemModel::setItem(qnum,5,q5);
+                    qmodel->QStandardItemModel::setItem(qnum,6,q6);
+                    qmodel->QStandardItemModel::setItem(qnum,7,q7);
+                    qmodel->QStandardItemModel::setItem(qnum,8,q8);
+                }
+                // add cancel num into pastentrust
+                QStandardItemModel *qnmodel = (QStandardItemModel *)ui->passentrust->model();
+                int qnnum = qnmodel->rowCount();
+
+                QStandardItem *qn0 = new QStandardItem(nmodel->index(rownum,0).data().toString());
+                QStandardItem *qn1 = new QStandardItem(nmodel->index(rownum,1).data().toString());
+                QStandardItem *qn2 = new QStandardItem(nmodel->index(rownum,2).data().toString());
+                QStandardItem *qn3 = new QStandardItem(nmodel->index(rownum,3).data().toString());
+                QStandardItem *qn4 = new QStandardItem(nmodel->index(rownum,4).data().toString());
+                QStandardItem *qn5 = new QStandardItem(nmodel->index(rownum,5).data().toString());
+                QStandardItem *qn6 = new QStandardItem(nmodel->index(rownum,6).data().toString());
+                QStandardItem *qn7 = new QStandardItem(nmodel->index(rownum,10).data().toString());
+                QStandardItem *qn8 = new QStandardItem(QString::fromStdString(tutorial::OrderStatusEnum_Name(reply.orderstatus())));
+                QStandardItem *qn9 = new QStandardItem(QString::fromStdString(reply.text()));
+
+                qnmodel->QStandardItemModel::setItem(qnnum,0,qn0);
+                qnmodel->QStandardItemModel::setItem(qnnum,1,qn1);
+                qnmodel->QStandardItemModel::setItem(qnnum,2,qn2);
+                qnmodel->QStandardItemModel::setItem(qnnum,3,qn3);
+                qnmodel->QStandardItemModel::setItem(qnnum,4,qn4);
+                qnmodel->QStandardItemModel::setItem(qnnum,5,qn5);
+                qnmodel->QStandardItemModel::setItem(qnnum,6,qn6);
+                qnmodel->QStandardItemModel::setItem(qnnum,7,qn7);
+                qnmodel->QStandardItemModel::setItem(qnnum,8,qn8);
+                qnmodel->QStandardItemModel::setItem(qnnum,9,qn9);
+
+                nmodel->removeRow(rownum);
+            }
+            else
+            {
+                //reset btn
+                QStandardItemModel *model = (QStandardItemModel *)ui->nowentrust->model();
+
+                QPushButton *bm = new QPushButton("Send");
+                bm->setProperty("id",QString::number(rownum));
+                bm->setProperty("action","modify");
+                ui->nowentrust->setIndexWidget(model->index(rownum,12),bm);
+
+
+                QPushButton *bd = new QPushButton("Delete");
+                bd->setProperty("id",QString::number(rownum));
+                bd->setProperty("action","delete");
+                ui->nowentrust->setIndexWidget(model->index(rownum,13),bd);
+
+                connect(bd,SIGNAL(clicked()),this,SLOT(delbuttonclick()));
+
+                rownum++;
+            }
+        }
+
+    }
     else if(reply.orderstatus()==7)
     {
         //modify nowentrust
@@ -340,8 +425,6 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
         model->QStandardItemModel::setItem(dnum,4,i4);
         model->QStandardItemModel::setItem(dnum,5,i5);
         model->QStandardItemModel::setItem(dnum,6,i6);
-
-
     }
     else if(reply.orderstatus()==8)
     {
@@ -458,18 +541,22 @@ void MainWindow::delbuttonclick()
     QPushButton *btn =(QPushButton*)sender();
     int rownum = btn->property("id").toInt();
     //qDebug()<<rownum;
-    /*timeval curtime;
+    timeval curtime;
     gettimeofday(&curtime,NULL);
     int milisec = curtime.tv_usec/1000;
     tm *local = localtime(&curtime.tv_sec);
     QString tempstr;
     tempstr.sprintf("%02d%02d%02d%03d%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec,0);
 
+    QStandardItemModel *delmodel = (QStandardItemModel *)ui->nowentrust->model();
+
+    tutorial::SimulatorTradeOrder order;
     order.Clear();
     //1
     order.set_transacttime(tempstr.toStdString().c_str());
+
     //2
-    if(ui->nowentrust->index(rownum,0).data().toString()==QString("sBuy"))
+    if(delmodel->index(rownum,0).data().toString().compare("sBuy")==0)
     {
         order.set_side(tutorial::SideEnum::sBuy);
     }
@@ -479,52 +566,46 @@ void MainWindow::delbuttonclick()
     }
 
     //3
-    order.set_symbol(ui->newscode->text().toStdString().c_str());
+    order.set_symbol(delmodel->index(rownum,2).data().toString().toStdString().c_str());
     //4
-    order.set_orderqty(ui->newennum->text().toInt());
+    order.set_orderqty(delmodel->index(rownum,8).data().toInt());
     //5
-    double newprice = ui->newenprice->text().toDouble();
-    //qDebug()<<"New Price : "<<newprice;
-    order.set_price(newprice);
-    //qDebug()<<"Set Price"<<order.price();
+    order.set_price(delmodel->index(rownum,6).data().toDouble());
+    /*
     //6
     if(ui->newortype->currentIndex()==0)
         order.set_ordertype(tutorial::OrderTypeEnum::otMarket);
     else
         order.set_ordertype(tutorial::OrderTypeEnum::otLimit);
+    */
     //7
     //order.set_tseordertype("");
     //8
-    if(ui->newrequest->currentIndex()==0)
+    if(delmodel->index(rownum,4).data().toString().compare("tifROD")==0)
         order.set_timeinforce(tutorial::TimeInForceEnum::tifROD);
-    else if(ui->newrequest->currentIndex()==1)
+    else if(delmodel->index(rownum,4).data().toString().compare("tifIOC")==0)
         order.set_timeinforce(tutorial::TimeInForceEnum::tifIOC);
-    else
+    else if(delmodel->index(rownum,4).data().toString().compare("tifFOK")==0)
         order.set_timeinforce(tutorial::TimeInForceEnum::tifFOK);
     //9
     order.set_nid(129);
     //10
-    if(ui->newmarket->currentIndex()==0)
-    {
-        if(ui->newentype->currentIndex()==0)
-            order.set_market(tutorial::MarketEnum::mTSE);
-        else
-            order.set_market(tutorial::MarketEnum::mTSE_ODD);
-    }
-    else
-    {
-        if(ui->newentype->currentIndex()==0)
-            order.set_market(tutorial::MarketEnum::mOTC);
-        else
-            order.set_market(tutorial::MarketEnum::mOTC_ODD);
-    }
-    //order.set_market(tutorial::MarketEnum::mFutures);
-    //11
-    order.set_orderid("0");
-    //12
-    order.set_kind(tutorial::KindEnum::kNew);
+    if(delmodel->index(rownum,3).data().toString().compare("mTSE")==0)
+        order.set_market(tutorial::MarketEnum::mTSE);
+    else if(delmodel->index(rownum,3).data().toString().compare("TSE_ODD")==0)
+        order.set_market(tutorial::MarketEnum::mTSE_ODD);
+    else if(delmodel->index(rownum,3).data().toString().compare("mOTC")==0)
+        order.set_market(tutorial::MarketEnum::mOTC);
+    else if(delmodel->index(rownum,3).data().toString().compare("mOTC_ODD")==0)
+        order.set_market(tutorial::MarketEnum::mOTC_ODD);
 
-    emit senddata();*/
+    //11
+    order.set_orderid(delmodel->index(rownum,1).data().toString().toStdString().c_str());
+    //12
+    order.set_kind(tutorial::KindEnum::kCancel);
+
+    emit senddata(order);
+    /**/
 }
 
 void MainWindow::serverfail(QString str)
@@ -650,18 +731,18 @@ void MainWindow::getnewtrack(Data newdata)
             //qDebug()<<"New 01 BB";
             tseFormat01 new01;
             new01.decodetse01(newdata.pkt_data,newdata.dhead);
-            //qDebug()<<"01 scode : "<<QString::fromStdString(new01.scode);
+            //qDebug()<<"tse 01 scode : "<<QString::fromStdString(new01.scode);
             for(int i=0;i<rmodel->rowCount();i++)
             {
                 if(new01.scode.compare(rmodel->index(i,1).data().toString().toStdString())==0 &&
-                    rmodel->index(i,2).data().toString().compare("mTSE")==0)
+                    (rmodel->index(i,2).data().toString().compare("mTSE")==0 || rmodel->index(i,2).data().toString().compare("mTSE_ODD")==0))
                 {
                     //qDebug()<<"New 01 CC";
                     QStandardItem *r3 = new QStandardItem(QString::number(new01.limup,'d',4));
                     QStandardItem *r4 = new QStandardItem(QString::number(new01.limdown,'d',4));
                     rmodel->QStandardItemModel::setItem(i,3,r3);
                     rmodel->QStandardItemModel::setItem(i,4,r4);
-                    break;
+                    //break;
                 }
             }
         }
@@ -669,18 +750,17 @@ void MainWindow::getnewtrack(Data newdata)
         {
             otcformat01 new01;
             new01.decodeotc01(newdata.pkt_data,newdata.dhead);
-            qDebug()<<"01 scode : "<<QString::fromStdString(new01.scode);
+            //qDebug()<<"otc 01 scode : "<<QString::fromStdString(new01.scode);
             for(int i=0;i<rmodel->rowCount();i++)
             {
                 if(new01.scode.compare(rmodel->index(i,1).data().toString().toStdString())==0 &&
-                    rmodel->index(i,2).data().toString().compare("mTSE")==0)
+                    (rmodel->index(i,2).data().toString().compare("mOTC")==0 || rmodel->index(i,2).data().toString().compare("mOTC_ODD")==0))
                 {
                     //qDebug()<<"New 01 CC";
                     QStandardItem *r3 = new QStandardItem(QString::number(new01.limup,'d',4));
                     QStandardItem *r4 = new QStandardItem(QString::number(new01.limdown,'d',4));
                     rmodel->QStandardItemModel::setItem(i,3,r3);
                     rmodel->QStandardItemModel::setItem(i,4,r4);
-                    break;
                 }
             }
         }

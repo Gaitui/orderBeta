@@ -2,7 +2,7 @@
 
 udpconnect::udpconnect(QHostAddress groupAddress,int port):groupAddress(groupAddress),port(port)
 {
-    qDebug()<<"In Udp connect!";
+    //qDebug()<<"In Udp connect!";
     bind(QHostAddress::AnyIPv4,port,QUdpSocket::ShareAddress);
     joinMulticastGroup(groupAddress);
     connect(this,SIGNAL(readyRead()),this,SLOT(readReady()));

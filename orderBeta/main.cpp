@@ -31,11 +31,17 @@ int main(int argc, char *argv[])
     Timer t(&w);
     outlog ol;
     udpthread mtse(&w,QHostAddress("226.0.100.100"),10000);
+    udpthread motc(&w,QHostAddress("226.0.30.30"),3000);
+    udpthread mtseodd(&w,QHostAddress("226.8.100.100"),10008);
+    udpthread motcodd(&w,QHostAddress("226.8.30.30"),3008);
     linkthread lt(&w,&ol,&t);
 
     t.start();
     ol.start();
     mtse.start();
+    motc.start();
+    mtseodd.start();
+    motcodd.start();
     lt.start();
     w.show();
     return a.exec();

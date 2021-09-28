@@ -52,8 +52,9 @@ void linkthread :: inisocket()
 }
 void linkthread :: checkconnect()
 {
-    if(socket->state()!=QTcpSocket::ConnectedState)
+    if(socket->state()!=QTcpSocket::ConnectedState || !havelogin)
     {
+        havelogin = false;
         inisocket();
     }
 }
