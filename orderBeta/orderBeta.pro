@@ -43,7 +43,8 @@ SOURCES += \
     timer.cpp \
     tseformat01.cpp \
     otcformat01.cpp \
-    format23.cpp
+    format23.cpp \
+    modifydialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -63,7 +64,8 @@ HEADERS += \
     timer.h \
     tseformat01.h \
     otcformat01.h \
-    format23.h
+    format23.h \
+    modifydialog.h
 
 FORMS += \
         mainwindow.ui

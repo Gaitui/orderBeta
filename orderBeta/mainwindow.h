@@ -22,6 +22,7 @@
 #include "tseformat01.h"
 #include "otcformat01.h"
 #include "format23.h"
+#include "modifydialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -48,6 +49,8 @@ private slots:
     void getaddtrack();
     void deltrack();
     void getnewtrack(Data);
+    void modifybuttonclick();
+    void modifysend();
 signals:
     void sendlink(QString);
     void senddata(tutorial::SimulatorTradeOrder);
@@ -57,6 +60,7 @@ signals:
 private:
     Ui::MainWindow *ui;
     addTrackDialog newtrack;
+    modifydialog modifytrust;
 };
 
 #endif // MAINWINDOW_H
