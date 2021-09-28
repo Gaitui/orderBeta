@@ -21,7 +21,7 @@ public:
     int check;
     int terminal[2];
     tools t;
-    void decode06(std::string,head);
+    void decode06(u_char*,head);
 };
 
 #endif // FORMAT06_H

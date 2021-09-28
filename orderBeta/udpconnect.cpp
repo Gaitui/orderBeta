@@ -21,10 +21,12 @@ void udpconnect::readReady()
         //qDebug()<<"Message From "<<sender.toString();
         //qDebug()<<"Port From "<<senderport;
         //qDebug()<<"Message :: "<<datagram.toHex();
-        std::string pkt_data = datagram.toStdString();
+        u_char *pkt_data = new u_char[datagram.size()];
+        std::memcpy(pkt_data,datagram.data(),datagram.size());
         //printf("%02x\n",str[0]);
+        //qDebug("Pktdata : %02x %02x",pkt_data[1],pkt_data[2]);
         int h=0;
-        int len = pkt_data.size();
+        int len = datagram.size();
         while(h<len)
         {
             if(pkt_data[h]==27)
@@ -36,14 +38,15 @@ void udpconnect::readReady()
                     //qDebug()<<"Esc : "<<dhead.esc<<" Len : "<<dhead.mlen<<" Type : "<<dhead.mtype<<" Code : "<<dhead.mcode<<" Ver : "<<dhead.mver<<" Seq : "<<dhead.mseq;
                     if(h+dhead.mlen<=len && pkt_data[h+dhead.mlen-2]==0x0d && pkt_data[h+dhead.mlen-1]==0x0a)
                     {
-                        if(dhead.mcode==6 || dhead.mcode==23)
+                        if(dhead.mcode==1 || dhead.mcode==6 || dhead.mcode==23)
                         {
-                            qDebug()<<"Message :: "<<datagram.toHex();
+                            //qDebug()<<"Message :: "<<datagram.toHex();
                             Data newdata;
                             newdata.dhead = dhead;
-                            for(int i=10;i<dhead.mlen;i++)
+                            newdata.pkt_data = new u_char[dhead.mlen];
+                            for(int i=0;i<dhead.mlen;i++)
                             {
-                                newdata.pkt_data+=pkt_data[h+i];
+                                newdata.pkt_data[i]=(pkt_data[h+i] & 0xff);
                             }
                             emit sendnewtrack(newdata);
                         }

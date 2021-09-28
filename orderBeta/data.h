@@ -7,7 +7,7 @@ class Data
 public:
     Data();
     head dhead;
-    std::string pkt_data;
+    u_char* pkt_data;
 };
 
 #endif // DATA_H

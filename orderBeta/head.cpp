@@ -2,7 +2,7 @@
 
 head::head(){}
 
-void head::decode(std::string pkt_data,int h)
+void head::decode(u_char* pkt_data,int h)
 {
 
     esc=pkt_data[h];

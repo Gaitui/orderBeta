@@ -14,7 +14,7 @@ public:
     int mver;
     int mseq;
     tools t;
-    void decode(std::string,int);
+    void decode(u_char*,int);
 };
 
 #endif // HEAD_H

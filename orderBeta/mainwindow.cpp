@@ -535,7 +535,7 @@ void MainWindow::serverfail(QString str)
     tm *local = localtime(&curtime.tv_sec);
     QString tempstr;
     tempstr.sprintf("%02d:%02d:%02d.%03d",local->tm_hour,local->tm_min,local->tm_sec,milisec);
-    ui->record->append(tempstr +" "+ str +" connect again in 5s.");
+    ui->record->append(tempstr +" "+ str +" try again in 5s.");
     ui->sendNew->setEnabled(false);
 }
 
@@ -610,7 +610,7 @@ void MainWindow::getaddtrack()
             btn->setProperty("action","delete");
 
             connect(btn,SIGNAL(clicked()),this,SLOT(deltrack()));
-            ui->realtime->setIndexWidget(rmodel->index(rnum,9),btn);
+            ui->realtime->setIndexWidget(rmodel->index(rnum,11),btn);
         }
         else
         {
@@ -635,7 +635,7 @@ void MainWindow::deltrack()
             btn->setProperty("action","delete");
 
             connect(btn,SIGNAL(clicked()),this,SLOT(deltrack()));
-            ui->realtime->setIndexWidget(rmodel->index(i,9),btn);
+            ui->realtime->setIndexWidget(rmodel->index(i,11),btn);
         }
     }
 }
@@ -643,7 +643,30 @@ void MainWindow::deltrack()
 void MainWindow::getnewtrack(Data newdata)
 {
     QStandardItemModel *rmodel = (QStandardItemModel *)ui->realtime->model();
-    if(newdata.dhead.mcode==6)
+    if(newdata.dhead.mcode==1)
+    {
+        if(newdata.dhead.mtype==1)
+        {
+            //qDebug()<<"New 01 BB";
+            tseFormat01 new01;
+            new01.decodetse01(newdata.pkt_data,newdata.dhead);
+            qDebug()<<"01 scode : "<<QString::fromStdString(new01.scode);
+            for(int i=0;i<rmodel->rowCount();i++)
+            {
+                if(new01.scode.compare(rmodel->index(i,1).data().toString().toStdString())==0 &&
+                    rmodel->index(i,2).data().toString().compare("mTSE")==0)
+                {
+                    qDebug()<<"New 01 CC";
+                    QStandardItem *r3 = new QStandardItem(QString::number(new01.limup,'d',4));
+                    QStandardItem *r4 = new QStandardItem(QString::number(new01.limdown,'d',4));
+                    rmodel->QStandardItemModel::setItem(i,3,r3);
+                    rmodel->QStandardItemModel::setItem(i,4,r4);
+                    break;
+                }
+            }
+        }
+    }
+    else if(newdata.dhead.mcode==6)
     {
         qDebug()<<"BB";
         format06 new06;
@@ -663,10 +686,10 @@ void MainWindow::getnewtrack(Data newdata)
                 int j=0;
                 if(new06.reveal[0]==1)
                 {
-                    QStandardItem *r3 = new QStandardItem(QString::number(new06.rnum[j]));
-                    QStandardItem *r4 = new QStandardItem(QString::number(new06.rprice[j],'d',4));
-                    rmodel->QStandardItemModel::setItem(i,5,r3);
-                    rmodel->QStandardItemModel::setItem(i,6,r4);
+                    QStandardItem *r5 = new QStandardItem(QString::number(new06.rnum[j]));
+                    QStandardItem *r6 = new QStandardItem(QString::number(new06.rprice[j],'d',4));
+                    rmodel->QStandardItemModel::setItem(i,5,r5);
+                    rmodel->QStandardItemModel::setItem(i,6,r6);
                     j++;
                 }
                 int tbuy=0;
@@ -675,10 +698,10 @@ void MainWindow::getnewtrack(Data newdata)
                 qDebug()<<tbuy;
                 if(tbuy!=0)
                 {
-                    QStandardItem *r5 = new QStandardItem(QString::number(new06.rnum[j]));
-                    QStandardItem *r6 = new QStandardItem(QString::number(new06.rprice[j],'d',4));
-                    rmodel->QStandardItemModel::setItem(i,7,r5);
-                    rmodel->QStandardItemModel::setItem(i,8,r6);
+                    QStandardItem *r7 = new QStandardItem(QString::number(new06.rnum[j]));
+                    QStandardItem *r8 = new QStandardItem(QString::number(new06.rprice[j],'d',4));
+                    rmodel->QStandardItemModel::setItem(i,7,r7);
+                    rmodel->QStandardItemModel::setItem(i,8,r8);
                     j+=tbuy;
                 }
                 int tsell=0;
