@@ -20,6 +20,7 @@
 #include "data.h"
 #include "format06.h"
 #include "tseformat01.h"
+#include "otcformat01.h"
 
 namespace Ui {
 class MainWindow;

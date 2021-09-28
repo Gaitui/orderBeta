@@ -41,7 +41,8 @@ SOURCES += \
     udpconnect.cpp \
     SimulatorTradeProtos.pb.cc \
     timer.cpp \
-    tseformat01.cpp
+    tseformat01.cpp \
+    otcformat01.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -59,7 +60,8 @@ HEADERS += \
     udpconnect.h \
     SimulatorTradeProtos.pb.h \
     timer.h \
-    tseformat01.h
+    tseformat01.h \
+    otcformat01.h
 
 FORMS += \
         mainwindow.ui

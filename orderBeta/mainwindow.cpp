@@ -650,13 +650,32 @@ void MainWindow::getnewtrack(Data newdata)
             //qDebug()<<"New 01 BB";
             tseFormat01 new01;
             new01.decodetse01(newdata.pkt_data,newdata.dhead);
+            //qDebug()<<"01 scode : "<<QString::fromStdString(new01.scode);
+            for(int i=0;i<rmodel->rowCount();i++)
+            {
+                if(new01.scode.compare(rmodel->index(i,1).data().toString().toStdString())==0 &&
+                    rmodel->index(i,2).data().toString().compare("mTSE")==0)
+                {
+                    //qDebug()<<"New 01 CC";
+                    QStandardItem *r3 = new QStandardItem(QString::number(new01.limup,'d',4));
+                    QStandardItem *r4 = new QStandardItem(QString::number(new01.limdown,'d',4));
+                    rmodel->QStandardItemModel::setItem(i,3,r3);
+                    rmodel->QStandardItemModel::setItem(i,4,r4);
+                    break;
+                }
+            }
+        }
+        else if(newdata.dhead.mtype==2)
+        {
+            otcformat01 new01;
+            new01.decodeotc01(newdata.pkt_data,newdata.dhead);
             qDebug()<<"01 scode : "<<QString::fromStdString(new01.scode);
             for(int i=0;i<rmodel->rowCount();i++)
             {
                 if(new01.scode.compare(rmodel->index(i,1).data().toString().toStdString())==0 &&
                     rmodel->index(i,2).data().toString().compare("mTSE")==0)
                 {
-                    qDebug()<<"New 01 CC";
+                    //qDebug()<<"New 01 CC";
                     QStandardItem *r3 = new QStandardItem(QString::number(new01.limup,'d',4));
                     QStandardItem *r4 = new QStandardItem(QString::number(new01.limdown,'d',4));
                     rmodel->QStandardItemModel::setItem(i,3,r3);
@@ -668,17 +687,17 @@ void MainWindow::getnewtrack(Data newdata)
     }
     else if(newdata.dhead.mcode==6)
     {
-        qDebug()<<"BB";
+        //qDebug()<<"BB";
         format06 new06;
         new06.decode06(newdata.pkt_data,newdata.dhead);
-        qDebug()<<QString::fromStdString(new06.scode);
+        //qDebug()<<QString::fromStdString(new06.scode);
         for(int i=0;i<rmodel->rowCount();i++)
         {
             if(new06.scode.compare(rmodel->index(i,1).data().toString().toStdString())==0 &&
                ((rmodel->index(i,2).data().toString().compare("mTSE")==0 && new06.dhead.mtype==1) ||
                 (rmodel->index(i,2).data().toString().compare("mOTC")==0 && new06.dhead.mtype==2)))
             {
-                qDebug()<<"CC";
+                //qDebug()<<"CC";
                 QString tracktime;
                 tracktime.sprintf("%02d:%02d:%02d.%03d.%03d",new06.mtime[0],new06.mtime[1],new06.mtime[2],new06.mtime[3]*10+new06.mtime[4]/10,(new06.mtime[4]%10)*100+new06.mtime[5]);
                 QStandardItem *r0 = new QStandardItem(tracktime);
