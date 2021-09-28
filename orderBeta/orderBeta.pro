@@ -30,7 +30,6 @@ SOURCES += \
     showui.cpp \
     showthread.cpp \
     linkthread.cpp \
-    outlog.cpp \
     udpthread.cpp \
     head.cpp \
     tools.cpp \
@@ -51,7 +50,6 @@ HEADERS += \
     showui.h \
     showthread.h \
     linkthread.h \
-    outlog.h \
     udpthread.h \
     head.h \
     tools.h \

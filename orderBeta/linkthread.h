@@ -3,7 +3,6 @@
 #include <QThread>
 #include <QTcpSocket>
 #include "mainwindow.h"
-#include "outlog.h"
 #include "SimulatorTradeProtos.pb.h"
 #include <QEventLoop>
 #include "google/protobuf/text_format.h"
@@ -18,7 +17,7 @@ class linkthread : public QThread
 {
     Q_OBJECT
 public:
-    explicit linkthread(MainWindow*,outlog*,Timer*);
+    explicit linkthread(MainWindow*,Timer*);
     ~linkthread();
     QTcpSocket *socket;
     bool con;
@@ -39,8 +38,6 @@ signals:
     void relogin();
     void fromtcp(tutorial::SimulatorTradeReply);
     void serverfail(QString);
-    void sendlog(QString);
-    void sendprotobuf(tutorial::SimulatorTradeReply);
 };
 
 #endif // LINKTHREAD_H

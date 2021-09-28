@@ -4,7 +4,6 @@
 #include <QThread>
 #include <QTcpSocket>
 #include "mainwindow.h"
-#include "outlog.h"
 #include "SimulatorTradeProtos.pb.h"
 #include <QEventLoop>
 #include "google/protobuf/text_format.h"

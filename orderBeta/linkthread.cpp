@@ -5,7 +5,7 @@ extern bool havelogin;
 extern std::string logindata;
 extern bool shutdown;
 
-linkthread::linkthread(MainWindow *w, outlog *lg,Timer *t) : QThread(),con(false)
+linkthread::linkthread(MainWindow *w,Timer *t) : QThread(),con(false)
 {
     connect(w,SIGNAL(sendEnd()),this,SLOT(receiveEnd()));
     connect(w,SIGNAL(sendlink(QString)),this,SLOT(writetohost(QString)));
@@ -14,8 +14,6 @@ linkthread::linkthread(MainWindow *w, outlog *lg,Timer *t) : QThread(),con(false
     connect(this,SIGNAL(relogin()),w,SLOT(relogin()));
     connect(this,SIGNAL(fromtcp(tutorial::SimulatorTradeReply)),w,SLOT(fromtcp(tutorial::SimulatorTradeReply)));
     connect(this,SIGNAL(serverfail(QString)),w,SLOT(serverfail(QString)));
-    connect(this,SIGNAL(sendlog(QString)),lg,SLOT(write(QString)));
-    connect(this,SIGNAL(sendprotobuf(tutorial::SimulatorTradeReply)),lg,SLOT(writeprotobuf(tutorial::SimulatorTradeReply)));
     connect(t,SIGNAL(sendFiveSec()),this,SLOT(checkconnect()));
 }
 linkthread::~linkthread()
@@ -23,7 +21,7 @@ linkthread::~linkthread()
     if(socket->state()==QTcpSocket::ConnectedState)
         socket->disconnect();
     socket->deleteLater();
-    //qDebug()<<socket->state();
+    qDebug()<<socket->state();
     this->wait();
     this->quit();
 }
@@ -46,7 +44,6 @@ void linkthread :: inisocket()
     }
     else
     {
-         emit sendlog(socket->errorString());
          emit serverfail(socket->errorString());
     }
 }
@@ -123,7 +120,7 @@ void linkthread::datatohost(tutorial::SimulatorTradeOrder order)
 }
 void linkthread::readyRead()
 {
-    qDebug()<<"Ready read";
+    qDebug()<<"linkthread Ready read";
     QByteArray datas = socket->readAll();
     tutorial::SimulatorTradeReply reply;
     for(int i=0;i<datas.size();)
@@ -147,12 +144,10 @@ void linkthread::readyRead()
                 if(dstr.compare(logindata)==0)
                 {
                     havelogin=true;
-                    emit sendlog(QString::fromStdString(dstr)+" login success!");
                     emit relogin();
                 }
                 else
                 {
-                    emit sendlog(QString::fromStdString(dstr));
                     emit sendError("Login fail!");
                 }
             }
@@ -160,7 +155,6 @@ void linkthread::readyRead()
             {
                 reply.ParseFromString(dstr);
                 emit fromtcp(reply);
-                emit sendprotobuf(reply);
             }
             i+=dlen;
         }

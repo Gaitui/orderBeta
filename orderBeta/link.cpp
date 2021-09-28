@@ -35,7 +35,7 @@ Link::Link():con(false)
     }
     if(shutdown)
     {
-        //qDebug()<<"RR";
+        qDebug()<<"Link shutdown";
         exit(0);
     }
 
