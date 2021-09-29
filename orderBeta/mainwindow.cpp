@@ -262,6 +262,11 @@ void MainWindow::on_sendNew_clicked()
 
 void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
 {
+    qDebug()<<"UID: "<<QString::fromStdString(reply.orderid());
+    qDebug()<<"Status :"<<reply.orderstatus();
+    qDebug()<<"Price :"<<reply.price();
+    qDebug()<<"OrderQty"<<reply.orderqty();
+
     if(reply.orderstatus()==2)
     {
 
@@ -292,7 +297,7 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
 
 
         QPushButton *bm = new QPushButton("Modify");
-        bm->setProperty("id",model->rowCount());
+        bm->setProperty("id",rownum);
         bm->setProperty("action","modify");
         ui->nowentrust->setIndexWidget(model->index(rownum,10),bm);
 
@@ -313,75 +318,88 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
         {
             if(reply.orderid().compare(nmodel->index(rownum,1).data().toString().toStdString())==0)
             {
+                qDebug()<<"Find UID";
+                qDebug()<<nmodel->index(rownum,6).data().toInt();
 
-                QStandardItemModel *qnmodel = (QStandardItemModel *)ui->passentrust->model();
-                QStandardItem *qn0 = new QStandardItem(nmodel->index(rownum,0).data().toString());
-                QStandardItem *qn1 = new QStandardItem(nmodel->index(rownum,1).data().toString());
-                QStandardItem *qn2 = new QStandardItem(nmodel->index(rownum,2).data().toString());
-                QStandardItem *qn3 = new QStandardItem(nmodel->index(rownum,3).data().toString());
-                QStandardItem *qn4 = new QStandardItem(nmodel->index(rownum,4).data().toString());
-                QStandardItem *qn5 = new QStandardItem(nmodel->index(rownum,5).data().toString());
-                QStandardItem *qn6 = new QStandardItem(nmodel->index(rownum,6).data().toString());
-                QStandardItem *qn7 = new QStandardItem(QString::number(nmodel->index(rownum,7).data().toInt()-reply.orderqty()));
-                QStandardItem *qn8 = new QStandardItem(QString::fromStdString(tutorial::OrderStatusEnum_Name(reply.orderstatus())));
-                QStandardItem *qn9 = new QStandardItem(QString::fromStdString(reply.text()));
-
-                if(reply.orderqty()==0)
+                if(reply.price()!=nmodel->index(rownum,6).data().toInt())
                 {
-                    //add deal num into passentrust (if have)
-                    if(nmodel->index(rownum,8).data().toInt()!=0)
-                    {
-                        QStandardItemModel *qmodel = (QStandardItemModel *)ui->passentrust->model();
-                        int qnum = qmodel->rowCount();
-                        QStandardItem *q0 = new QStandardItem(nmodel->index(rownum,0).data().toString());
-                        QStandardItem *q1 = new QStandardItem(nmodel->index(rownum,1).data().toString());
-                        QStandardItem *q2 = new QStandardItem(nmodel->index(rownum,2).data().toString());
-                        QStandardItem *q3 = new QStandardItem(nmodel->index(rownum,3).data().toString());
-                        QStandardItem *q4 = new QStandardItem(nmodel->index(rownum,4).data().toString());
-                        QStandardItem *q5 = new QStandardItem(nmodel->index(rownum,5).data().toString());
-                        QStandardItem *q6 = new QStandardItem(nmodel->index(rownum,6).data().toString());
-                        QStandardItem *q7 = new QStandardItem(nmodel->index(rownum,8).data().toString());
-                        QStandardItem *q8 = new QStandardItem(QString::fromStdString("osPartiallyFilled"));
-
-                        qmodel->QStandardItemModel::setItem(qnum,0,q0);
-                        qmodel->QStandardItemModel::setItem(qnum,1,q1);
-                        qmodel->QStandardItemModel::setItem(qnum,2,q2);
-                        qmodel->QStandardItemModel::setItem(qnum,3,q3);
-                        qmodel->QStandardItemModel::setItem(qnum,4,q4);
-                        qmodel->QStandardItemModel::setItem(qnum,5,q5);
-                        qmodel->QStandardItemModel::setItem(qnum,6,q6);
-                        qmodel->QStandardItemModel::setItem(qnum,7,q7);
-                        qmodel->QStandardItemModel::setItem(qnum,8,q8);
-                        nmodel->removeRow(rownum);
-                    }
+                    QStandardItem *i6 = new QStandardItem(QString::number(reply.price()));
+                    nmodel->QStandardItemModel::setItem(rownum,6,i6);
+                    qDebug()<<"Price change!";
+                    rownum++;
                 }
                 else
                 {
-                    QStandardItem *i6 = new QStandardItem(QString::number(reply.price()));
-                    QStandardItem *i7 = new QStandardItem(QString::number(reply.orderqty()));
-                    QStandardItem *i8 = new QStandardItem(QString::number(reply.orderqty() - nmodel->index(rownum,9).data().toInt()));
+                    /*QStandardItemModel *qnmodel = (QStandardItemModel *)ui->passentrust->model();
+                    QStandardItem *qn0 = new QStandardItem(nmodel->index(rownum,0).data().toString());
+                    QStandardItem *qn1 = new QStandardItem(nmodel->index(rownum,1).data().toString());
+                    QStandardItem *qn2 = new QStandardItem(nmodel->index(rownum,2).data().toString());
+                    QStandardItem *qn3 = new QStandardItem(nmodel->index(rownum,3).data().toString());
+                    QStandardItem *qn4 = new QStandardItem(nmodel->index(rownum,4).data().toString());
+                    QStandardItem *qn5 = new QStandardItem(nmodel->index(rownum,5).data().toString());
+                    QStandardItem *qn6 = new QStandardItem(nmodel->index(rownum,6).data().toString());
+                    QStandardItem *qn7 = new QStandardItem(QString::number(nmodel->index(rownum,7).data().toInt()-reply.orderqty()));
+                    QStandardItem *qn8 = new QStandardItem(QString::fromStdString(tutorial::OrderStatusEnum_Name(reply.orderstatus())));
+                    QStandardItem *qn9 = new QStandardItem(QString::fromStdString(reply.text()));*/
 
-                    nmodel->QStandardItemModel::setItem(rownum,6,i6);
-                    nmodel->QStandardItemModel::setItem(rownum,7,i7);
-                    nmodel->QStandardItemModel::setItem(rownum,8,i8);
+                    if(reply.orderqty()==0)
+                    {
+                        //add deal num into passentrust (if have)
+                        if(nmodel->index(rownum,8).data().toInt()!=0)
+                        {
+                            QStandardItemModel *qmodel = (QStandardItemModel *)ui->passentrust->model();
+                            int qnum = qmodel->rowCount();
+                            QStandardItem *q0 = new QStandardItem(nmodel->index(rownum,0).data().toString());
+                            QStandardItem *q1 = new QStandardItem(nmodel->index(rownum,1).data().toString());
+                            QStandardItem *q2 = new QStandardItem(nmodel->index(rownum,2).data().toString());
+                            QStandardItem *q3 = new QStandardItem(nmodel->index(rownum,3).data().toString());
+                            QStandardItem *q4 = new QStandardItem(nmodel->index(rownum,4).data().toString());
+                            QStandardItem *q5 = new QStandardItem(nmodel->index(rownum,5).data().toString());
+                            QStandardItem *q6 = new QStandardItem(nmodel->index(rownum,6).data().toString());
+                            QStandardItem *q7 = new QStandardItem(nmodel->index(rownum,8).data().toString());
+                            QStandardItem *q8 = new QStandardItem(QString::fromStdString("osPartiallyFilled"));
+
+                            qmodel->QStandardItemModel::setItem(qnum,0,q0);
+                            qmodel->QStandardItemModel::setItem(qnum,1,q1);
+                            qmodel->QStandardItemModel::setItem(qnum,2,q2);
+                            qmodel->QStandardItemModel::setItem(qnum,3,q3);
+                            qmodel->QStandardItemModel::setItem(qnum,4,q4);
+                            qmodel->QStandardItemModel::setItem(qnum,5,q5);
+                            qmodel->QStandardItemModel::setItem(qnum,6,q6);
+                            qmodel->QStandardItemModel::setItem(qnum,7,q7);
+                            qmodel->QStandardItemModel::setItem(qnum,8,q8);
+                            nmodel->removeRow(rownum);
+                        }
+                    }
+                    else
+                    {
+                        QStandardItem *i6 = new QStandardItem(QString::number(reply.price()));
+                        QStandardItem *i7 = new QStandardItem(QString::number(reply.orderqty()));
+                        QStandardItem *i9 = new QStandardItem(QString::number(reply.orderqty() - nmodel->index(rownum,8).data().toInt()));
+
+                        nmodel->QStandardItemModel::setItem(rownum,6,i6);
+                        nmodel->QStandardItemModel::setItem(rownum,7,i7);
+                        nmodel->QStandardItemModel::setItem(rownum,9,i9);
+                        rownum++;
+                    }
+                    // add cancel num into pastentrust
+
+                    /*int qnnum = qnmodel->rowCount();
+
+
+
+                    qnmodel->QStandardItemModel::setItem(qnnum,0,qn0);
+                    qnmodel->QStandardItemModel::setItem(qnnum,1,qn1);
+                    qnmodel->QStandardItemModel::setItem(qnnum,2,qn2);
+                    qnmodel->QStandardItemModel::setItem(qnnum,3,qn3);
+                    qnmodel->QStandardItemModel::setItem(qnnum,4,qn4);
+                    qnmodel->QStandardItemModel::setItem(qnnum,5,qn5);
+                    qnmodel->QStandardItemModel::setItem(qnnum,6,qn6);
+                    qnmodel->QStandardItemModel::setItem(qnnum,7,qn7);
+                    qnmodel->QStandardItemModel::setItem(qnnum,8,qn8);
+                    qnmodel->QStandardItemModel::setItem(qnnum,9,qn9);*/
+
                 }
-                // add cancel num into pastentrust
-
-                int qnnum = qnmodel->rowCount();
-
-
-
-                qnmodel->QStandardItemModel::setItem(qnnum,0,qn0);
-                qnmodel->QStandardItemModel::setItem(qnnum,1,qn1);
-                qnmodel->QStandardItemModel::setItem(qnnum,2,qn2);
-                qnmodel->QStandardItemModel::setItem(qnnum,3,qn3);
-                qnmodel->QStandardItemModel::setItem(qnnum,4,qn4);
-                qnmodel->QStandardItemModel::setItem(qnnum,5,qn5);
-                qnmodel->QStandardItemModel::setItem(qnnum,6,qn6);
-                qnmodel->QStandardItemModel::setItem(qnnum,7,qn7);
-                qnmodel->QStandardItemModel::setItem(qnnum,8,qn8);
-                qnmodel->QStandardItemModel::setItem(qnnum,9,qn9);
-
 
             }
             else
@@ -391,7 +409,7 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
 
 
                 QPushButton *bm = new QPushButton("Send");
-                bm->setProperty("id",model->rowCount());
+                bm->setProperty("id",rownum);
                 bm->setProperty("action","modify");
                 ui->nowentrust->setIndexWidget(model->index(rownum,10),bm);
 
@@ -411,6 +429,7 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
     }
     else if(reply.orderstatus()==6)
     {
+
         //modify nowentrust
         QStandardItemModel *nmodel = (QStandardItemModel *)ui->nowentrust->model();
         int rownum;
@@ -478,7 +497,7 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
 
 
                 QPushButton *bm = new QPushButton("Send");
-                bm->setProperty("id",model->rowCount());
+                bm->setProperty("id",rownum);
                 bm->setProperty("action","modify");
                 ui->nowentrust->setIndexWidget(model->index(rownum,10),bm);
 
@@ -571,7 +590,7 @@ void MainWindow::fromtcp(tutorial::SimulatorTradeReply reply)
                 QStandardItemModel *model = (QStandardItemModel *)ui->nowentrust->model();
 
                 QPushButton *bm = new QPushButton("Send");
-                bm->setProperty("id",model->rowCount());
+                bm->setProperty("id",i);
                 bm->setProperty("action","modify");
                 ui->nowentrust->setIndexWidget(model->index(i,10),bm);
 
@@ -987,6 +1006,10 @@ void MainWindow::modifybuttonclick()
     QPushButton *btn =(QPushButton*)sender();
     int rownum = btn->property("id").toInt();
     QStandardItemModel *modmodel = (QStandardItemModel *)ui->nowentrust->model();
+    /*qDebug()<<rownum;
+    qDebug()<<modmodel->index(rownum,1).data().toString();
+    qDebug()<<modmodel->index(rownum,6).data().toDouble();
+    qDebug()<<modmodel->index(rownum,9).data().toInt();*/
     modifytrust.setup(rownum,modmodel->index(rownum,2).data().toString(),modmodel->index(rownum,1).data().toString(),modmodel->index(rownum,6).data().toDouble(),modmodel->index(rownum,9).data().toInt());
     modifytrust.exec();
 }

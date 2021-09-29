@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
 
-    qInstallMessageHandler(MessageHandler);
+    //qInstallMessageHandler(MessageHandler);
 
     qRegisterMetaType<Data>("Data");
     qRegisterMetaType<Data>("Data&");
